@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_whatsapp/screens/settings/widgets/edit_about_column..dart';
+import 'package:my_whatsapp/screens/settings/widgets/edit_about_column.dart';
 import 'package:my_whatsapp/screens/settings/widgets/edit_phone_num_column.dart';
 import 'package:my_whatsapp/screens/settings/widgets/edit_profile_tile.dart';
 

@@ -15,12 +15,12 @@ class SettingsScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            const SizedBox(
+          children: const [
+            SizedBox(
               height: 20.0,
             ),
 
-            const Padding(
+            Padding(
               padding: EdgeInsets.symmetric(horizontal: 18.0, vertical: 10.0),
               child: Text(
                 'Settings',
@@ -29,13 +29,14 @@ class SettingsScreen extends StatelessWidget {
             ),
 
             // Profile ListTile
-            const SettingsProfileTile(),
+            SettingsProfileTile(),
 
-            const SizedBox(
+            SizedBox(
               height: 20.0,
             ),
 
-            const SettingsListView(),
+            // Settings Items ListView
+            SettingsListView(),
           ],
         ),
       ),

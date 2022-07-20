@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_whatsapp/commons/data.dart';
 import 'package:my_whatsapp/commons/styles.dart';
 import 'package:my_whatsapp/screens/chat/widgets/chat_header_bar.dart';
 import 'package:my_whatsapp/screens/chat/widgets/chat_listview.dart';

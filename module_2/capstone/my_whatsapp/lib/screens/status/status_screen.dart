@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:my_whatsapp/commons/styles.dart';
-import 'package:my_whatsapp/commons/data.dart';
 import 'package:my_whatsapp/screens/status/widgets/my_status_listtile.dart';
 import 'package:my_whatsapp/screens/status/widgets/people_status_listview.dart';
 import 'package:my_whatsapp/screens/status/widgets/status_search_bar.dart';
