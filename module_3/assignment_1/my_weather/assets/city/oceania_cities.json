@@ -1,0 +1,42 @@
+[
+    {
+        "id": 2147714,
+        "name": "Sydney",
+        "state": "",
+        "country": "AU",
+        "coord": {
+            "lon": 151.207321,
+            "lat": -33.867851
+        }
+    },
+    {
+        "id": 2158177,
+        "name": "Melbourne",
+        "state": "",
+        "country": "AU",
+        "coord": {
+            "lon": 144.963318,
+            "lat": -37.813999
+        }
+    },
+    {
+        "id": 2179537,
+        "name": "Wellington",
+        "state": "",
+        "country": "NZ",
+        "coord": {
+            "lon": 174.775574,
+            "lat": -41.28664
+        }
+    },
+    {
+        "id": 2198148,
+        "name": "Suva",
+        "state": "",
+        "country": "FJ",
+        "coord": {
+            "lon": 178.441483,
+            "lat": -18.141609
+        }
+    }
+]

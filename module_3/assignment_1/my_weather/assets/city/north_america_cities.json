@@ -1,0 +1,42 @@
+[
+    {
+        "id": 5174095,
+        "name": "Toronto",
+        "state": "OH",
+        "country": "US",
+        "coord": {
+            "lon": -80.600906,
+            "lat": 40.46423
+        }
+    },
+    {
+        "id": 5128581,
+        "name": "New York City",
+        "state": "NY",
+        "country": "US",
+        "coord": {
+            "lon": -74.005966,
+            "lat": 40.714272
+        }
+    },
+    {
+        "id": 6077271,
+        "name": "Montreal River",
+        "state": "",
+        "country": "CA",
+        "coord": {
+            "lon": -84.649918,
+            "lat": 47.233372
+        }
+    },
+    {
+        "id": 6621230,
+        "name": "San Francisco",
+        "state": "",
+        "country": "BO",
+        "coord": {
+            "lon": -64.681183,
+            "lat": -20.75375
+        }
+    }
+]

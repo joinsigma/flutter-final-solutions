@@ -1,0 +1,32 @@
+[
+    {
+        "id": 3448433,
+        "name": "São Paulo",
+        "state": "",
+        "country": "BR",
+        "coord": {
+            "lon": -49.0,
+            "lat": -22.0
+        }
+    },
+    {
+        "id": 3936452,
+        "name": "Lima",
+        "state": "",
+        "country": "PE",
+        "coord": {
+            "lon": -76.638893,
+            "lat": -12.00389
+        }
+    },
+    {
+        "id": 5095808,
+        "name": "Bogota",
+        "state": "NJ",
+        "country": "US",
+        "coord": {
+            "lon": -74.029861,
+            "lat": 40.876209
+        }
+    }
+]

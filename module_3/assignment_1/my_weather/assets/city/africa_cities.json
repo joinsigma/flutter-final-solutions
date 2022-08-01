@@ -1,0 +1,52 @@
+[
+    {
+        "id": 2314302,
+        "name": "Kinshasa",
+        "state": "",
+        "country": "CD",
+        "coord": {
+            "lon": 15.32146,
+            "lat": -4.32459
+        }
+    },
+    {
+        "id": 2332459,
+        "name": "Lagos",
+        "state": "",
+        "country": "NG",
+        "coord": {
+            "lon": 3.39583,
+            "lat": 6.45306
+        }
+    },
+    {
+        "id": 360630,
+        "name": "Cairo",
+        "state": "",
+        "country": "EG",
+        "coord": {
+            "lon": 31.24967,
+            "lat": 30.06263
+        }
+    },
+    {
+        "id": 360995,
+        "name": "Giza",
+        "state": "",
+        "country": "EG",
+        "coord": {
+            "lon": 31.21093,
+            "lat": 30.00808
+        }
+    },
+    {
+        "id": 184742,
+        "name": "Nairobi",
+        "state": "",
+        "country": "KE",
+        "coord": {
+            "lon": 36.833328,
+            "lat": -1.28333
+        }
+    }
+]

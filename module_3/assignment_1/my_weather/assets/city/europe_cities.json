@@ -1,0 +1,52 @@
+[
+    {
+        "id": 2643743,
+        "name": "London",
+        "state": "",
+        "country": "GB",
+        "coord": {
+            "lon": -0.12574,
+            "lat": 51.50853
+        }
+    },
+    {
+        "id": 2968815,
+        "name": "Paris",
+        "state": "",
+        "country": "FR",
+        "coord": {
+            "lon": 2.3486,
+            "lat": 48.853401
+        }
+    },
+    {
+        "id": 5202009,
+        "name": "Moscow",
+        "state": "PA",
+        "country": "US",
+        "coord": {
+            "lon": -75.518517,
+            "lat": 41.33675
+        }
+    },
+    {
+        "id": 5245497,
+        "name": "Berlin",
+        "state": "WI",
+        "country": "US",
+        "coord": {
+            "lon": -88.943451,
+            "lat": 43.96804
+        }
+    },
+    {
+        "id": 6359304,
+        "name": "Madrid",
+        "state": "",
+        "country": "ES",
+        "coord": {
+            "lon": -3.68275,
+            "lat": 40.489349
+        }
+    }
+]

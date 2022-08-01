@@ -1,0 +1,82 @@
+[
+    {
+		"id": 1733046,
+		"name": "Kuala Lumpur",
+		"state": "",
+		"country": "MY",
+		"coord": {
+			"lon": 101.686531,
+			"lat": 3.14309
+		}
+	},
+	{
+		"id": 1733047,
+		"name": "Pulau Pinang",
+		"state": "",
+		"country": "MY",
+		"coord": {
+			"lon": 100.258476,
+			"lat": 5.37677
+		}
+	},
+	{
+		"id": 1733049,
+		"name": "Johor",
+		"state": "",
+		"country": "MY",
+		"coord": {
+			"lon": 103.5,
+			"lat": 2
+		}
+	},
+    {
+        "id": 1819729,
+        "name": "Hong Kong",
+        "state": "",
+        "country": "HK",
+        "coord": {
+            "lon": 114.157692,
+            "lat": 22.285521
+        }
+    },
+    {
+        "id": 1850147,
+        "name": "Tokyo",
+        "state": "",
+        "country": "JP",
+        "coord": {
+            "lon": 139.691711,
+            "lat": 35.689499
+        }
+    },
+    {
+        "id": 1835847,
+        "name": "Seoul",
+        "state": "",
+        "country": "KR",
+        "coord": {
+            "lon": 127.0,
+            "lat": 37.583328
+        }
+    },
+    {
+        "id": 1609348,
+        "name": "Bangkok",
+        "state": "",
+        "country": "TH",
+        "coord": {
+            "lon": 100.71991,
+            "lat": 13.87719
+        }
+    },
+    {
+        "id": 1880252,
+        "name": "Singapore",
+        "state": "",
+        "country": "SG",
+        "coord": {
+            "lon": 103.850067,
+            "lat": 1.28967
+        }
+    }
+]
