@@ -5,7 +5,7 @@ import 'package:my_weather/data/model/weather.dart';
 
 class RestApiService {
   static const String baseLink = 'https://api.openweathermap.org/data/2.5/weather';
-  static const String apiKey = 'd6151141037a0904532e90dec78c9814';
+  static const String apiKey = '<your_api_key>';
 
   /// API call for get weather by city id
   /// 
