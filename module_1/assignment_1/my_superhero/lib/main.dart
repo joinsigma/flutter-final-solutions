@@ -22,23 +22,19 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Spiderman'),
         centerTitle: true,
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.orange,
       ),
       body: Container(
-        color: Colors.yellow[200],
+        color: Colors.orangeAccent,
         child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25.0),
-            child: Image.network(
-              'https://www.pixel4k.com/wp-content/uploads/2019/09/little-spiderman-with-shield_1568054235-2048x1152.jpg',
-              fit: BoxFit.fill,
-            ),
+          child: Image.network(
+            'https://i.ebayimg.com/images/g/-qAAAOSw~AVYuw4n/s-l500.jpg',
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         child: const Text('Next'),
-        backgroundColor: Colors.redAccent,
+        backgroundColor: Colors.red,
         onPressed: () {
           // Business logic to be implemented to trigger a new screen transition
         },

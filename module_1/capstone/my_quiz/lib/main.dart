@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Quiz Alt'),
+        title: const Text('My Quiz'),
       ),
       body: Container(
         color: Colors.blue[100],

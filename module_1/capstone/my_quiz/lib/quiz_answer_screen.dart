@@ -30,7 +30,7 @@ class QuizAnswerScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Text(
-                  currentQuiz['question_string'],
+                  currentQuiz['answer_desc'],
                   textAlign: TextAlign.center,
                   style: const TextStyle(fontSize: 20.0),
                 ),
