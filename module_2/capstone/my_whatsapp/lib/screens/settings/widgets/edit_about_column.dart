@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_whatsapp/commons/data.dart';
 
 class EditAboutColumn extends StatelessWidget {
   const EditAboutColumn({
@@ -28,10 +29,10 @@ class EditAboutColumn extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Expanded(
+                 Expanded(
                   child: TextField(
                     decoration: InputDecoration(
-                      hintText: 'Hello World',
+                      hintText: edit_profile_data['about_me'],
                       hintStyle: TextStyle(color: Colors.black),
                       border: InputBorder.none,
                       isDense: true,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_whatsapp/commons/data.dart';
 
 class EditProfileTile extends StatelessWidget {
   const EditProfileTile({
@@ -12,20 +13,19 @@ class EditProfileTile extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
-        children: const [
+        children: [
           // Avatar Tile
           ListTile(
             leading: CircleAvatar(
               radius: 26.0,
-              backgroundImage:
-                  NetworkImage('https://picsum.photos/id/1025/100/100'),
+              backgroundImage: NetworkImage(edit_profile_data['profile_pic']),
             ),
-            subtitle:
-                Text('Enter your name and add an optional profile picture'),
+            subtitle: const Text(
+                'Enter your name and add an optional profile picture'),
             tileColor: Colors.white,
-            contentPadding: EdgeInsets.fromLTRB(18.0, 26.0, 18.0, 5.0),
+            contentPadding: const EdgeInsets.fromLTRB(18.0, 26.0, 18.0, 5.0),
           ),
-          Padding(
+          const Padding(
             padding: EdgeInsets.symmetric(horizontal: 33.0, vertical: 10.0),
             child: Text(
               'Edit',
@@ -33,21 +33,21 @@ class EditProfileTile extends StatelessWidget {
             ),
           ),
 
-          Divider(),
+          const Divider(),
 
           // Name Input
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 18.0),
+            padding: const EdgeInsets.symmetric(horizontal: 18.0),
             child: TextField(
               decoration: InputDecoration(
-                hintText: 'Calibre Cliff',
-                hintStyle: TextStyle(color: Colors.black),
+                hintText: edit_profile_data['profile_name'],
+                hintStyle: const TextStyle(color: Colors.black),
                 isDense: true,
                 border: InputBorder.none,
               ),
             ),
           ),
-          Divider(),
+          const Divider(),
         ],
       ),
     );

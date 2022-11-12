@@ -192,3 +192,11 @@ final List<Map<String, dynamic>> chat_screen_data = [
     "messageTime": "08:33",
   },
 ];
+
+
+final Map<String, dynamic> edit_profile_data = {
+  "profile_pic" : "https://picsum.photos/id/1025/100/100",
+  "profile_name" : "John Doe",
+  "phone_num" : "+6011-8434-3213",
+  "about_me" : "Hello World"
+};

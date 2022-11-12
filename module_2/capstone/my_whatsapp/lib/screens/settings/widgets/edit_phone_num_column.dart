@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_whatsapp/commons/data.dart';
 
 class EditPhoneNumberColumn extends StatelessWidget {
   const EditPhoneNumberColumn({
@@ -22,12 +23,12 @@ class EditPhoneNumberColumn extends StatelessWidget {
         ),
         Container(
           color: Colors.white,
-          child: const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 18.0),
+          child:  Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 18.0),
             child: TextField(
               decoration: InputDecoration(
-                hintText: '+6011-8434-3213',
-                hintStyle: TextStyle(color: Colors.black),
+                hintText: edit_profile_data['phone_num'],
+                hintStyle: const TextStyle(color: Colors.black),
                 border: InputBorder.none,
                 isDense: true,
               ),
