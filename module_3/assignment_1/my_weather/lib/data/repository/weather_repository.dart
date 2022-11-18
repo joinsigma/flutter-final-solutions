@@ -10,6 +10,7 @@ class WeatherRepository {
 
   Future<Weather> getWeatherByCityId(String cityId) async {
     final result = await _restApiService.getWeatherByCityId(cityId);
-    return result;
+    return await Future.delayed(const Duration(seconds: 2),(){return result;});
+    // return result;
   }
 }
