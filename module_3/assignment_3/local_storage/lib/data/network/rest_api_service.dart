@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:local_storage/data/storage/local_storage_service.dart';
 import '../model/user.dart';
 
 class RestApiService {
@@ -8,6 +9,8 @@ class RestApiService {
   static const String signInUrl =
       "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyA5iSaDunKCBNiUWifV61EOVX331pkI3SA";
 
+  static const String pingServerUrl =
+      "https://asia-southeast1-flutter-todo-a2430.cloudfunctions.net/user/ping-server";
   static const headers = {'Content-Type': 'application/json'};
 
   // New user registration
@@ -68,5 +71,38 @@ class RestApiService {
     throw Exception('API Error during user sign-in process');
   }
 
+  ///Ping Server
+  Future<String> pingServer() async {
+    LocalStorageService localStorageService = LocalStorageService();
+
+    final token = await localStorageService.getAuthToken();
+    if (token == null) throw Exception("Auth Token not found!");
+
+    final response = await http.get(
+      Uri.parse(pingServerUrl),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+    if (response.statusCode == 200) {
+      return response.body;
+    } else if (response.statusCode == 403) {
+      throw Exception('Not Authorized, please pass auth token');
+    } else {
+      print(response.statusCode);
+      print(response.body);
+      throw Exception('Server Error');
+    }
+  }
+
   ///Todo 1: Challenge: Refresh token
+
+  ///Todo 2 : Challenge logout
+  Future<bool> logout() async {
+    LocalStorageService localStorageService = LocalStorageService();
+    final isTokenDeleted = await localStorageService.deleteUserToken();
+    return isTokenDeleted;
+  }
 }

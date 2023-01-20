@@ -22,9 +22,10 @@ class _LoginScreenState extends State<LoginScreen> {
   late TextEditingController _passwordController;
 
   ///Lesson code
-  RestApiService _restApiService = RestApiService();
-  LocalStorageService _localStorageService = LocalStorageService();
+  final RestApiService _restApiService = RestApiService();
+  final LocalStorageService _localStorageService = LocalStorageService();
   bool isLoading = false;
+  bool isSignInError = false;
 
   @override
   void initState() {
@@ -118,6 +119,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 return null;
               },
             ),
+            const SizedBox(height: 8.0),
+            ///Display error if email/password incorrect
+            if (isSignInError)
+              const Text(
+                'Email or Password incorrect',
+                style: TextStyle(color: Colors.red),
+              ),
             const SizedBox(height: 40.0),
             SizedBox(
               height: 32.0,
@@ -127,25 +135,35 @@ class _LoginScreenState extends State<LoginScreen> {
                 onPressed: () async {
                   // Only allow login if both passed validation
                   if (_loginFormKey.currentState!.validate()) {
-                    ///Todo: Call API for login
-                    setState(() {
-                      isLoading = true;
-                    });
-                    final user = await _restApiService.signInUsingEmailPassword(
-                        _emailController.text, _passwordController.text);
-                    final isSaved = await _localStorageService.saveUserToken(
-                        user.authToken, user.refreshToken);
-                    setState(() {
-                      isLoading = false;
-                    });
-                    if (!mounted) return;
-                    if (isSaved) {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const HomeScreen(),
-                        ),
-                      );
+                    try {
+                      ///Todo: Call API for login
+                      setState(() {
+                        isLoading = true;
+                        isSignInError = false;
+                      });
+                      final user =
+                          await _restApiService.signInUsingEmailPassword(
+                              _emailController.text, _passwordController.text);
+                      final isSaved = await _localStorageService.saveUserToken(
+                          user.authToken, user.refreshToken);
+                      setState(() {
+                        isLoading = false;
+                      });
+                      if (!mounted) return;
+                      if (isSaved) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HomeScreen(),
+                          ),
+                        );
+                      }
+                    } catch (e) {
+                      print(e);
+                      setState(() {
+                        isLoading = false;
+                        isSignInError = true;
+                      });
                     }
                   }
                 },
@@ -163,7 +181,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 child: const Text('Register for an account'),
                 onPressed: () {
-                  Navigator.pushReplacement(
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => const RegistrationScreen(),
