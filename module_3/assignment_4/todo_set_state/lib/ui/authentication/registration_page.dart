@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_todo_bloc/ui/authentication/bloc/registration_page_bloc.dart';
 import 'package:flutter_todo_bloc/ui/authentication/widgets/registration_form.dart';
-import 'package:flutter_todo_bloc/ui/listing/todo_list_screen.dart';
 
 class RegistrationPage extends StatefulWidget {
   const RegistrationPage({Key? key}) : super(key: key);
@@ -43,41 +40,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
             passwordCtrl: _passwordCtrl,
             usernameCtrl: _usernameCtrl,
             ageCtrl: _ageCtrl,
-            emailCtrl: _emailCtrl)
-
-        // BlocConsumer<RegistrationBloc, RegistrationState>(
-        //   listener: (context, state) {
-        //     if (state is RegistrationSuccessful) {
-        //       Navigator.pushReplacement(
-        //         context,
-        //         MaterialPageRoute(
-        //           builder: (context) => const TodoListScreen(),
-        //         ),
-        //       );
-        //     }
-        //   },
-        //   builder: (context, state) {
-        //     if (state is RegistrationInitial) {
-        //       return RegistrationForm(
-        //           passwordCtrl: _passwordCtrl,
-        //           usernameCtrl: _usernameCtrl,
-        //           ageCtrl: _ageCtrl,
-        //           emailCtrl: _emailCtrl);
-        //     } else if (state is RegistrationLoading) {
-        //       return const Center(
-        //         child: CircularProgressIndicator(),
-        //       );
-        //     } else if (state is RegistrationFailed) {
-        //       return RegistrationForm(
-        //           passwordCtrl: _passwordCtrl,
-        //           usernameCtrl: _usernameCtrl,
-        //           ageCtrl: _ageCtrl,
-        //           emailCtrl: _emailCtrl,
-        //           errorMsg: state.errorMsg);
-        //     }
-        //     return Container();
-        //   },
-        // ),
-        );
+            emailCtrl: _emailCtrl));
   }
 }
