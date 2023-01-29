@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter_todo_bloc/data/repository/user_repository.dart';
 import 'package:http/http.dart' as http;
 
 import '../model/todo.dart';
@@ -8,50 +7,81 @@ import '../model/user.dart';
 import 'exceptions.dart';
 
 class RestApiService {
-  static const String baseLink = "https://api-nodejs-todolist.herokuapp.com";
+  static const String registerUrl =
+      'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyA5iSaDunKCBNiUWifV61EOVX331pkI3SA';
+  static const String loginUrl =
+      "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyA5iSaDunKCBNiUWifV61EOVX331pkI3SA";
+
+  // static const String baseLink = "https://api-nodejs-todolist.herokuapp.com";
+
+  static const String todoApiBaseUrl =
+      "https://asia-southeast1-flutter-todo-a2430.cloudfunctions.net/user/todos";
   static const headers = {'Content-Type': 'application/json'};
 
   /// API call for new user registration
-  /// Used in [UserRepository]
-  Future<User> registerNewUser(
-      String name, String email, String password, int age) async {
+  // New user registration
+  Future<User> registerWithEmailPassword(
+    String email,
+    String password,
+  ) async {
     final response = await http.post(
-      Uri.parse('$baseLink/user/register'),
+      Uri.parse(registerUrl),
       headers: headers,
-      body: jsonEncode(
-        {"name": name, "email": email, "password": password, "age": age},
-      ),
+      body: jsonEncode({
+        'email': email,
+        'password': password,
+        'returnSecureToken': true,
+      }),
     );
 
-    if (response.statusCode == 201) {
-      final raw = jsonDecode(response.body);
+    final raw = jsonDecode(response.body);
+    if (response.statusCode == 200) {
       return User.fromJson(raw);
+    } else if (response.statusCode == 400 &&
+        raw['error']['message'] == 'EMAIL_EXISTS') {
+      throw Exception('An account has been registered under this email');
     } else {
-      //Todo: To implement logic for catching duplicated user registration error.
-      throw UserRegistrationError("API Error user registration.");
+      throw Exception(
+        'API Error during user registration',
+      );
     }
   }
 
   /// API call for authenticating existing user
-  /// Used in [UserRepository]
-  Future<User> loginExistingUser(String email, String password) async {
+  // User sign-in using email/password
+  Future<User> signInUsingEmailPassword(
+    String email,
+    String password,
+  ) async {
     final response = await http.post(
-      Uri.parse('$baseLink/user/login'),
+      Uri.parse(loginUrl),
       headers: headers,
-      body: jsonEncode(<String, String>{"email": email, "password": password}),
+      body: jsonEncode({
+        'email': email,
+        'password': password,
+        'returnSecureToken': true,
+      }),
     );
 
+    final raw = jsonDecode(response.body);
     if (response.statusCode == 200) {
-      final raw = jsonDecode(response.body);
       return User.fromJson(raw);
-    } else {
-      throw UserLoginError('API Error Logging in user');
+    } else if (response.statusCode == 400) {
+      final errorCode = raw['error']['message'];
+      if (errorCode == 'INVALID_PASSWORD') {
+        throw Exception('Invalid password');
+      } else if (errorCode == 'EMAIL_NOT_FOUND') {
+        throw Exception('Account not exist with the provided email');
+      }
+      throw Exception('API Error during user sign-in process');
     }
+    throw Exception('API Error during user sign-in process');
   }
 
+  /// API call to retrieve all todos for a particular user.
   Future<List<Todo>> getAllTodos(String token) async {
     final response = await http.get(
-      Uri.parse('$baseLink/task'),
+      Uri.parse(todoApiBaseUrl),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token'
@@ -67,14 +97,56 @@ class RestApiService {
     }
   }
 
-  Future<Todo> addNewTodos(String token, String description) async {
+  /// API call to add a new todos for a particular user.
+  Future<Todo> addNewTodo(String token, Todo todo) async {
     final response = await http.post(
-      Uri.parse('$baseLink/task'),
+      Uri.parse(todoApiBaseUrl),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token'
       },
-      body: jsonEncode(<String, String>{"description": description}),
+      //Todo: repair here.
+      body: jsonEncode(<String, String>{"description": ''}),
+    );
+
+    if (response.statusCode == 201) {
+      final raw = jsonDecode(response.body)['data'];
+      return Todo.fromJson(raw);
+    } else {
+      throw AddTodoError('API Error add new todo');
+    }
+  }
+
+  /// API call to update an existing todos for a particular user.
+  Future<Todo> updateTodo(String token,Todo todo) async {
+    final response = await http.put(
+      Uri.parse(todoApiBaseUrl),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token'
+      },
+      ///Todo: repair here.
+      body: jsonEncode(<String, String>{"description":''}),
+    );
+
+    if (response.statusCode == 201) {
+      final raw = jsonDecode(response.body)['data'];
+      return Todo.fromJson(raw);
+    } else {
+      throw AddTodoError('API Error add new todo');
+    }
+  }
+
+  /// API call to delete a todos for a particular user.
+  Future<Todo> deleteTodo(String token,String id) async {
+    final response = await http.put(
+      Uri.parse(todoApiBaseUrl),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token'
+      },
+      ///Todo: repair here.
+      body: jsonEncode(<String, String>{"description":''}),
     );
 
     if (response.statusCode == 201) {

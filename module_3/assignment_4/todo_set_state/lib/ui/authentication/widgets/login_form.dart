@@ -62,7 +62,10 @@ class _LoginFormState extends State<LoginForm> {
                   MaterialPageRoute(
                       builder: (context) => const TodoListScreen()));
             },
-            child: const Text('Login'),
+            child: const Text(
+              'Login',
+              style: TextStyle(color: Colors.white),
+            ),
           ),
         ),
         const SizedBox(
