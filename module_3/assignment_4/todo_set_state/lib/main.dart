@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_todo_bloc/ui/authentication/authentication_screen.dart';
+import 'package:todo_set_state/ui/authentication/authentication_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
               primary: Colors.red[400],
             ),
       ),
-      home: AuthenticationScreen(),
+      home: const AuthenticationScreen(),
     );
   }
 }

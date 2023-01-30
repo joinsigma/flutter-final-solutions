@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_todo_bloc/ui/add/todo_add_screen.dart';
-import 'package:flutter_todo_bloc/ui/listing/todo_listview.dart';
+import 'package:todo_set_state/ui/listing/todo_listview.dart';
+
+import '../add/todo_add_screen.dart';
 
 class TodoListScreen extends StatefulWidget {
   const TodoListScreen({Key? key}) : super(key: key);

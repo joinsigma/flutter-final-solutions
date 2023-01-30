@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_todo_bloc/ui/listing/todo_list_screen.dart';
+
+import '../../listing/todo_list_screen.dart';
 
 class LoginForm extends StatefulWidget {
   final TextEditingController emailCtrl;
@@ -63,9 +64,11 @@ class _LoginFormState extends State<LoginForm> {
               //       password: widget.passwordCtrl.text),
               // );
               Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const TodoListScreen()));
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const TodoListScreen(),
+                ),
+              );
             },
             child: const Text(
               'Login',

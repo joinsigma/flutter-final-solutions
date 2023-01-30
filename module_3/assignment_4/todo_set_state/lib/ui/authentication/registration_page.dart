@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_todo_bloc/ui/authentication/widgets/registration_form.dart';
+import 'package:todo_set_state/ui/authentication/widgets/registration_form.dart';
 
 class RegistrationPage extends StatefulWidget {
   const RegistrationPage({Key? key}) : super(key: key);

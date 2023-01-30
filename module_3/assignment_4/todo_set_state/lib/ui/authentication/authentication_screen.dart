@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_todo_bloc/ui/authentication/registration_page.dart';
+import 'package:todo_set_state/ui/authentication/registration_page.dart';
 import 'login_page.dart';
 
 class AuthenticationScreen extends StatefulWidget {

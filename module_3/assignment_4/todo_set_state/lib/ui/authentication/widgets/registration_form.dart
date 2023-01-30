@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_todo_bloc/ui/listing/todo_list_screen.dart';
+
+import '../../listing/todo_list_screen.dart';
 
 class RegistrationForm extends StatefulWidget {
   final TextEditingController usernameCtrl;

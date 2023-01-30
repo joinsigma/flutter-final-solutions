@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_todo_bloc/ui/edit/todo_edit_screen.dart';
 import 'package:intl/intl.dart';
+
+import '../edit/todo_edit_screen.dart';
 
 class TodoDetailScreen extends StatefulWidget {
   const TodoDetailScreen({Key? key}) : super(key: key);
@@ -94,16 +95,18 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 100.0),
             child: ElevatedButton.icon(
-                style:
-                    ElevatedButton.styleFrom(backgroundColor: Colors.red[400]),
-                icon: const Icon(Icons.edit),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const TodoEditScreen()));
-                },
-                label: const Text('Edit Todo')),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red[400]),
+              icon: const Icon(Icons.edit),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const TodoEditScreen(),
+                  ),
+                );
+              },
+              label: const Text('Edit Todo'),
+            ),
           ),
         ],
       ),
