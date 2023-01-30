@@ -22,6 +22,11 @@ class _LoginFormState extends State<LoginForm> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        Icon(
+          Icons.note_alt_rounded,
+          size: 40,
+          color: Theme.of(context).primaryColor,
+        ),
         const Text(
           "Login to Todoist",
           style: TextStyle(fontSize: 30.0),
