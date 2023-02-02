@@ -130,7 +130,7 @@ class RestApiService {
   }
 
   /// API call to add a new todos for a particular user.
-  Future<Todo> addNewTodo(String token, Todo todo) async {
+  Future<Todo> addNewTodo({required String token, required Todo todo}) async {
     final response = await http.post(
       Uri.parse(todoApiBaseUrl),
       headers: {
@@ -152,7 +152,7 @@ class RestApiService {
   }
 
   /// API call to update an existing todos for a particular user.
-  Future<Todo> updateTodo(String token, Todo todo) async {
+  Future<Todo> updateTodo({required String token, required Todo todo}) async {
     final response = await http.put(
       Uri.parse(todoApiBaseUrl),
       headers: {
@@ -175,25 +175,27 @@ class RestApiService {
   }
 
   /// API call to delete a todos for a particular user.
-  Future<Todo> deleteTodo(String token, String id) async {
-    final response = await http.put(
-      Uri.parse(todoApiBaseUrl),
+  Future<bool> deleteTodo({required String token, required String id}) async {
+    print('$todoApiBaseUrl/$id');
+    final response = await http.delete(
+      Uri.parse('$todoApiBaseUrl/$id'),
       headers: {
-        'Content-Type': 'application/json',
+        // 'Content-Type': 'application/json',
         'Authorization': 'Bearer $token'
       },
-
-      ///Todo: repair here.
-      body: jsonEncode(<String, String>{"description": ''}),
     );
 
-    if (response.statusCode == 201) {
-      final raw = jsonDecode(response.body)['data'];
-      return Todo.fromJson(raw);
+    print(response);
+    if (response.statusCode == 200) {
+      print('deleted');
+      print(response.body);
+      return true;
+      // final raw = jsonDecode(response.body)['data'];
+      // return Todo.fromJson(raw);
     } else if (response.statusCode == 403) {
       throw NotAuthorizedError();
     } else {
-      throw AddTodoError('API Error add new todo');
+      throw DeleteTodoError('API Error delete todo id: $id');
     }
   }
 }

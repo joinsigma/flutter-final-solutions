@@ -92,7 +92,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
                                 ///Get Refresh Token and refresh session via API Service.
                                 final refreshToken =
-                                    await _localStorageService.getAuthToken();
+                                    await _localStorageService.getRefreshToken();
                                 final newAuthToken = await _restApiService
                                     .refreshSession(refreshToken!);
 

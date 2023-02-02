@@ -24,7 +24,7 @@ class Todo {
 
   ///Convert from JSON to object
   Todo.fromJson(Map<String, dynamic> json)
-      : id = json['userId'],
+      : id = json['id'],
         title = json['title'],
         description = json['description'],
         isCompleted = json['isCompleted'],

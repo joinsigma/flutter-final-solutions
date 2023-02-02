@@ -21,4 +21,9 @@ class AddTodoError implements Exception {
   AddTodoError(this.message);
 }
 
+class DeleteTodoError implements Exception {
+  final String message;
+  DeleteTodoError(this.message);
+}
+
 class NotAuthorizedError implements Exception {}
