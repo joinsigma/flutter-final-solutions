@@ -23,6 +23,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
   bool _isLoading = false;
   bool _isSessionExpired = false;
   bool _isDeleteTodoApiError = false;
+  ///Todo: Find explanation for this.
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
