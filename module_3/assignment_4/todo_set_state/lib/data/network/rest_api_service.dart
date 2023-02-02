@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:todo_set_state/data/storage/local_storage_service.dart';
 
 import '../model/todo.dart';
 import '../model/user.dart';
@@ -11,8 +12,8 @@ class RestApiService {
       'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyA5iSaDunKCBNiUWifV61EOVX331pkI3SA';
   static const String loginUrl =
       "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyA5iSaDunKCBNiUWifV61EOVX331pkI3SA";
-
-  // static const String baseLink = "https://api-nodejs-todolist.herokuapp.com";
+  static const String refreshTokenUrl =
+      "https://securetoken.googleapis.com/v1/token?key=AIzaSyA5iSaDunKCBNiUWifV61EOVX331pkI3SA";
 
   static const String todoApiBaseUrl =
       "https://asia-southeast1-flutter-todo-a2430.cloudfunctions.net/user/todos";
@@ -20,10 +21,10 @@ class RestApiService {
 
   /// API call for new user registration
   // New user registration
-  Future<User> registerWithEmailPassword(
-    String email,
-    String password,
-  ) async {
+  Future<User> registerWithEmailPassword({
+    required String email,
+    required String password,
+  }) async {
     final response = await http.post(
       Uri.parse(registerUrl),
       headers: headers,
@@ -39,9 +40,10 @@ class RestApiService {
       return User.fromJson(raw);
     } else if (response.statusCode == 400 &&
         raw['error']['message'] == 'EMAIL_EXISTS') {
-      throw Exception('An account has been registered under this email');
+      throw UserRegistrationError(
+          'An account has been registered under this email');
     } else {
-      throw Exception(
+      throw UserRegistrationError(
         'API Error during user registration',
       );
     }
@@ -49,10 +51,10 @@ class RestApiService {
 
   /// API call for authenticating existing user
   // User sign-in using email/password
-  Future<User> signInUsingEmailPassword(
-    String email,
-    String password,
-  ) async {
+  Future<User> signInUsingEmailPassword({
+    required String email,
+    required String password,
+  }) async {
     final response = await http.post(
       Uri.parse(loginUrl),
       headers: headers,
@@ -69,17 +71,44 @@ class RestApiService {
     } else if (response.statusCode == 400) {
       final errorCode = raw['error']['message'];
       if (errorCode == 'INVALID_PASSWORD') {
-        throw Exception('Invalid password');
+        throw UserLoginError('Invalid password');
       } else if (errorCode == 'EMAIL_NOT_FOUND') {
-        throw Exception('Account not exist with the provided email');
+        throw UserLoginError('Account not exist with the provided email');
       }
-      throw Exception('API Error during user sign-in process');
+      throw UserLoginError('API Error during user sign-in process');
     }
-    throw Exception('API Error during user sign-in process');
+    throw UserLoginError('API Error during user sign-in process');
+  }
+
+  Future<String> refreshSession(String refreshToken) async {
+    final response = await http.post(
+      Uri.parse(refreshTokenUrl),
+      headers: headers,
+      body: jsonEncode(
+        {
+          'grant_type': "refresh_token",
+          'refreshToken': refreshToken,
+        },
+      ),
+    );
+
+    final raw = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      return raw['access_token'];
+    } else {
+      print(refreshToken);
+      print(response.statusCode);
+      print(response.body);
+      throw UserRefreshSessionError();
+    }
   }
 
   /// API call to retrieve all todos for a particular user.
-  Future<List<Todo>> getAllTodos(String token) async {
+  Future<List<Todo>> getAllTodos() async {
+    ///Get token from local storage.
+    final localStorageService = LocalStorageService();
+    final token = await localStorageService.getAuthToken();
+
     final response = await http.get(
       Uri.parse(todoApiBaseUrl),
       headers: {
@@ -89,10 +118,13 @@ class RestApiService {
     );
 
     if (response.statusCode == 200) {
-      final List raw = jsonDecode(response.body)['data'];
-      List<Todo> todos = raw.map((data) => Todo.fromJson(data)).toList();
+      final raw = jsonDecode(response.body);
+      List<Todo> todos = raw.map<Todo>((data) => Todo.fromJson(data)).toList();
       return todos;
+    } else if (response.statusCode == 403) {
+      throw NotAuthorizedError();
     } else {
+      print(response.statusCode);
       throw GetAllTodosError('API Error getting all todos');
     }
   }
@@ -112,46 +144,54 @@ class RestApiService {
     if (response.statusCode == 201) {
       final raw = jsonDecode(response.body)['data'];
       return Todo.fromJson(raw);
+    } else if (response.statusCode == 403) {
+      throw NotAuthorizedError();
     } else {
       throw AddTodoError('API Error add new todo');
     }
   }
 
   /// API call to update an existing todos for a particular user.
-  Future<Todo> updateTodo(String token,Todo todo) async {
+  Future<Todo> updateTodo(String token, Todo todo) async {
     final response = await http.put(
       Uri.parse(todoApiBaseUrl),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token'
       },
+
       ///Todo: repair here.
-      body: jsonEncode(<String, String>{"description":''}),
+      body: jsonEncode(<String, String>{"description": ''}),
     );
 
     if (response.statusCode == 201) {
       final raw = jsonDecode(response.body)['data'];
       return Todo.fromJson(raw);
+    } else if (response.statusCode == 403) {
+      throw NotAuthorizedError();
     } else {
       throw AddTodoError('API Error add new todo');
     }
   }
 
   /// API call to delete a todos for a particular user.
-  Future<Todo> deleteTodo(String token,String id) async {
+  Future<Todo> deleteTodo(String token, String id) async {
     final response = await http.put(
       Uri.parse(todoApiBaseUrl),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token'
       },
+
       ///Todo: repair here.
-      body: jsonEncode(<String, String>{"description":''}),
+      body: jsonEncode(<String, String>{"description": ''}),
     );
 
     if (response.statusCode == 201) {
       final raw = jsonDecode(response.body)['data'];
       return Todo.fromJson(raw);
+    } else if (response.statusCode == 403) {
+      throw NotAuthorizedError();
     } else {
       throw AddTodoError('API Error add new todo');
     }

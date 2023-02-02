@@ -9,37 +9,39 @@ class RegistrationPage extends StatefulWidget {
 }
 
 class _RegistrationPageState extends State<RegistrationPage> {
-  late TextEditingController _usernameCtrl;
-  late TextEditingController _emailCtrl;
-  late TextEditingController _passwordCtrl;
-  late TextEditingController _ageCtrl;
+  // late TextEditingController _usernameCtrl;
+  // late TextEditingController _emailCtrl;
+  // late TextEditingController _passwordCtrl;
+  // late TextEditingController _ageCtrl;
 
   @override
   void initState() {
-    _usernameCtrl = TextEditingController();
-    _emailCtrl = TextEditingController();
-    _passwordCtrl = TextEditingController();
-    _ageCtrl = TextEditingController();
+    // _usernameCtrl = TextEditingController();
+    // _emailCtrl = TextEditingController();
+    // _passwordCtrl = TextEditingController();
+    // _ageCtrl = TextEditingController();
     super.initState();
   }
 
   @override
   void dispose() {
-    _usernameCtrl.dispose();
-    _passwordCtrl.dispose();
-    _emailCtrl.dispose();
-    _ageCtrl.dispose();
+    // _usernameCtrl.dispose();
+    // _passwordCtrl.dispose();
+    // _emailCtrl.dispose();
+    // _ageCtrl.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30.0),
-        child: RegistrationForm(
-            passwordCtrl: _passwordCtrl,
-            usernameCtrl: _usernameCtrl,
-            ageCtrl: _ageCtrl,
-            emailCtrl: _emailCtrl));
+      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+      child: RegistrationForm(
+          // passwordCtrl: _passwordCtrl,
+          // usernameCtrl: _usernameCtrl,
+          // ageCtrl: _ageCtrl,
+          // emailCtrl: _emailCtrl
+          ),
+    );
   }
 }

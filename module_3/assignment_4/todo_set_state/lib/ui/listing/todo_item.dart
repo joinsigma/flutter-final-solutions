@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
 
+import '../../data/model/todo.dart';
 import '../detail/todo_detail_screen.dart';
 
 class TodoItem extends StatelessWidget {
-  const TodoItem({Key? key}) : super(key: key);
-
+  final Todo todo;
+  TodoItem({Key? key, required this.todo}) : super(key: key);
+  final now = DateTime.now();
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(right: 5.0, left: 5.0, top: 5.0),
       child: GestureDetector(
-        onTap: (){
-          Navigator.push(context, MaterialPageRoute(builder:
-          (context) => TodoDetailScreen()
-          ));
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => TodoDetailScreen(todo: todo),
+            ),
+          );
         },
         child: Card(
           color: Colors.grey[100],
@@ -26,148 +31,155 @@ class TodoItem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Learn Flutter',
+                        todo.title,
                         style: TextStyle(
-                            fontSize: 16.0, fontWeight: FontWeight.bold),
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                            decoration: todo.isCompleted
+                                ? TextDecoration.lineThrough
+                                : null),
                       ),
                       Text(
-                        'Lorem Ipsum is simply dummy text of the'
-                        ' printing and typesetting industry',
+                        todo.description,
                         overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            decoration: todo.isCompleted
+                                ? TextDecoration.lineThrough
+                                : null),
                       ),
                       Wrap(
                         children: [
-                          Chip(
-                            avatar: Icon(
-                              Icons.priority_high,
-                              color: Colors.purple,
-                            ),
-                            label: Text(
-                              'High',
-                              style: TextStyle(color: Colors.purple),
-                            ),
-                            backgroundColor: Colors.purple[50],
+                          _assignStatusChip(todo.priority),
+                          const SizedBox(
+                            width: 8,
                           ),
-                          Chip(
-                            avatar: Icon(
-                              Icons.low_priority,
-                              color: Colors.blue,
-                            ),
-                            label: Text(
-                              'Medium',
-                              style: TextStyle(color: Colors.blue),
-                            ),
-                            backgroundColor: Colors.blue[50],
-                          ),
-                          Chip(
-                            avatar: Icon(
-                              Icons.low_priority,
-                              color: Colors.brown,
-                            ),
-                            label: Text(
-                              'Low',
-                              style: TextStyle(color: Colors.brown),
-                            ),
-                            backgroundColor: Colors.brown[50],
-                          ),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Chip(
-                            avatar: Icon(
-                              Icons.calendar_today,
-                              color: Colors.teal,
-                            ),
-                            label: Text(
-                              'Today',
-                              style: TextStyle(color: Colors.teal),
-                            ),
-                            backgroundColor: Colors.teal[50],
-                          ),
-                          Chip(
-                            avatar: Icon(
-                              Icons.calendar_today,
-                              color: Colors.orange,
-                            ),
-                            label: Text(
-                              'Upcoming',
-                              style: TextStyle(color: Colors.orange),
-                            ),
-                            backgroundColor: Colors.orange[50],
-                          ),
-                          Chip(
-                            avatar: Icon(
-                              Icons.calendar_today,
-                              color: Colors.red,
-                            ),
-                            label: Text(
-                              'Delayed',
-                              style: TextStyle(color: Colors.red),
-                            ),
-                            backgroundColor: Colors.red[100],
+                          _assignTimelineStatusChip(todo.deadline),
+                          const SizedBox(
+                            width: 8,
                           ),
                         ],
                       ),
-                      // Row(
-                      //   children: [
-                      //     Chip(
-                      //       avatar: Icon(
-                      //         Icons.priority_high,
-                      //         color: Colors.red,
-                      //       ),
-                      //       label: Text(
-                      //         'High',
-                      //         style: TextStyle(color: Colors.red),
-                      //       ),
-                      //       backgroundColor: Colors.red[100],
-                      //     ),
-                      //     SizedBox(
-                      //       width: 20,
-                      //     ),
-                      //     Chip(
-                      //       avatar: Icon(
-                      //         Icons.calendar_today,
-                      //         color: Colors.teal,
-                      //       ),
-                      //       label: Text(
-                      //         'Today',
-                      //         style: TextStyle(color: Colors.teal),
-                      //       ),
-                      //       backgroundColor: Colors.teal[50],
-                      //     ),
-                      //     Chip(
-                      //       avatar: Icon(
-                      //         Icons.calendar_today,
-                      //         color: Colors.orange,
-                      //       ),
-                      //       label: Text(
-                      //         'Upcoming',
-                      //         style: TextStyle(color: Colors.orange),
-                      //       ),
-                      //       backgroundColor: Colors.orange[50],
-                      //     ),
-                      //     Chip(
-                      //       avatar: Icon(
-                      //         Icons.calendar_today,
-                      //         color: Colors.red,
-                      //       ),
-                      //       label: Text(
-                      //         'Delayed',
-                      //         style: TextStyle(color: Colors.red),
-                      //       ),
-                      //       backgroundColor: Colors.red[100],
-                      //     ),
-                      //   ],
-                      // )
                     ],
                   ),
                 ),
               ),
-              Checkbox(value: false, onChanged: (value) {}),
+              if (todo.isCompleted)
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Icon(
+                    Icons.check,
+                    color: Colors.green,
+                  ),
+                )
             ],
           ),
         ),
       ),
     );
+  }
+
+  ///Compare task priority and return the right status.
+  Widget _assignStatusChip(Priority priority) {
+    Widget p;
+
+    switch (priority) {
+      case Priority.high:
+        p = Chip(
+          avatar: const Icon(
+            Icons.priority_high,
+            color: Colors.purple,
+          ),
+          label: const Text(
+            'High',
+            style: TextStyle(color: Colors.purple),
+          ),
+          backgroundColor: Colors.purple[50],
+        );
+        break;
+      case Priority.medium:
+        p = Chip(
+          avatar: const Icon(
+            Icons.low_priority,
+            color: Colors.blue,
+          ),
+          label: const Text(
+            'Medium',
+            style: TextStyle(color: Colors.blue),
+          ),
+          backgroundColor: Colors.blue[50],
+        );
+        break;
+      case Priority.low:
+        p = Chip(
+          avatar: const Icon(
+            Icons.low_priority,
+            color: Colors.brown,
+          ),
+          label: const Text(
+            'Low',
+            style: TextStyle(color: Colors.brown),
+          ),
+          backgroundColor: Colors.brown[50],
+        );
+        break;
+      default:
+        p = Chip(
+          avatar: const Icon(
+            Icons.low_priority,
+            color: Colors.brown,
+          ),
+          label: const Text(
+            'Low',
+            style: TextStyle(color: Colors.brown),
+          ),
+          backgroundColor: Colors.brown[50],
+        );
+    }
+    return p;
+  }
+
+  ///Compare today\'s date against task deadline and return the right status.
+  Widget _assignTimelineStatusChip(DateTime deadline) {
+    int deadlineEpoch = deadline.millisecondsSinceEpoch;
+    DateTime now = DateTime.now();
+    int todayEpoch =
+        DateTime(now.year, now.month, now.day).millisecondsSinceEpoch;
+    if (deadlineEpoch == todayEpoch) {
+      return Chip(
+        avatar: const Icon(
+          Icons.calendar_today,
+          color: Colors.teal,
+        ),
+        label: const Text(
+          'Today',
+          style: TextStyle(color: Colors.teal),
+        ),
+        backgroundColor: Colors.teal[50],
+      );
+    } else if (deadlineEpoch > todayEpoch) {
+      return Chip(
+        avatar: const Icon(
+          Icons.calendar_today,
+          color: Colors.orange,
+        ),
+        label: const Text(
+          'Upcoming',
+          style: TextStyle(color: Colors.orange),
+        ),
+        backgroundColor: Colors.orange[50],
+      );
+    } else {
+      return Chip(
+        avatar: const Icon(
+          Icons.calendar_today,
+          color: Colors.red,
+        ),
+        label: const Text(
+          'Delayed',
+          style: TextStyle(color: Colors.red),
+        ),
+        backgroundColor: Colors.red[100],
+      );
+    }
   }
 }

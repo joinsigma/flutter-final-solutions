@@ -9,19 +9,19 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  late TextEditingController _emailCtrl;
-  late TextEditingController _passwordCtrl;
+  // late TextEditingController _emailCtrl;
+  // late TextEditingController _passwordCtrl;
   @override
   void initState() {
-    _emailCtrl = TextEditingController();
-    _passwordCtrl = TextEditingController();
+    // _emailCtrl = TextEditingController();
+    // _passwordCtrl = TextEditingController();
     super.initState();
   }
 
   @override
   void dispose() {
-    _emailCtrl.dispose();
-    _passwordCtrl.dispose();
+    // _emailCtrl.dispose();
+    // _passwordCtrl.dispose();
     super.dispose();
   }
 
@@ -30,9 +30,9 @@ class _LoginPageState extends State<LoginPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30.0),
       child: LoginForm(
-        passwordCtrl: _passwordCtrl,
-        emailCtrl: _emailCtrl,
-        errorMsg: 'Error',
+        // passwordCtrl: _passwordCtrl,
+        // emailCtrl: _emailCtrl,
+        // errorMsg: 'Error',
       ),
     );
   }
