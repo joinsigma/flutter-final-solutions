@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+import 'package:todo_set_state/data/network/rest_api_service.dart';
+import 'package:todo_set_state/data/storage/local_storage_service.dart';
 // import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class TodoEditScreen extends StatefulWidget {
@@ -9,15 +13,19 @@ class TodoEditScreen extends StatefulWidget {
 }
 
 class _TodoEditScreenState extends State<TodoEditScreen> {
+  late RestApiService _restApiService;
+  late LocalStorageService _localStorageService;
   late TextEditingController _titleCtrl;
   late TextEditingController _descriptionCtrl;
   late TextEditingController _deadlineCtrl;
-  late TextEditingController _priorityCtrl;
-  String dropDownValue = 'Low';
+  String priorityDropDownValue = 'Low';
   @override
   void initState() {
     _titleCtrl = TextEditingController(text: 'Learn Flutter');
     _descriptionCtrl = TextEditingController(text: 'Learn Flutter');
+    _restApiService = RestApiService();
+    _localStorageService = LocalStorageService();
+    _deadlineCtrl = TextEditingController();
     super.initState();
   }
 
@@ -61,42 +69,46 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
                 ),
               ),
             ),
-            // Padding(
-            //   padding: const EdgeInsets.all(8.0),
-            //   child: TextFormField(
-            //     readOnly: true,
-            //     onTap: () {
-            //       showModalBottomSheet(
-            //         shape: RoundedRectangleBorder(
-            //             borderRadius: BorderRadius.circular(16)),
-            //         context: context,
-            //         builder: (context) => _datePicker(context),
-            //       );
-            //     },
-            //     controller: _deadlineCtrl,
-            //     decoration: const InputDecoration(
-            //       prefixIcon: Icon(Icons.calendar_today),
-            //     ),
-            //   ),
-            //   // child: TextFormField(
-            //   //   controller: _descriptionCtrl,
-            //   //   decoration: InputDecoration(
-            //   //     label: const Text('Deadline'),
-            //   //     floatingLabelStyle: const TextStyle(fontSize: 20),
-            //   //     border: OutlineInputBorder(
-            //   //       borderRadius: BorderRadius.circular(10),
-            //   //     ),
-            //   //   ),
-            //   //   onTap: () {
-            //   //     ///Set date
-            //   //   },
-            //   // ),
-            // ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                readOnly: true,
+                onTap: () {
+                  showModalBottomSheet(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16)),
+                    context: context,
+                    builder: (context) => _datePicker(context),
+                  );
+                },
+                controller: _deadlineCtrl,
+                decoration: InputDecoration(
+                  label: const Text('Deadline'),
+                  floatingLabelStyle: const TextStyle(fontSize: 20),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+              // child: TextFormField(
+              //   controller: _descriptionCtrl,
+              //   decoration: InputDecoration(
+              //     label: const Text('Deadline'),
+              //     floatingLabelStyle: const TextStyle(fontSize: 20),
+              //     border: OutlineInputBorder(
+              //       borderRadius: BorderRadius.circular(10),
+              //     ),
+              //   ),
+              //   onTap: () {
+              //     ///Set date
+              //   },
+              // ),
+            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: DropdownButtonFormField(
                 decoration: InputDecoration(
-                  label: Text('Priority'),
+                  label: const Text('Priority'),
                   floatingLabelStyle: const TextStyle(fontSize: 20),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -104,7 +116,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
                 ),
                 isExpanded: true,
                 borderRadius: BorderRadius.circular(10),
-                value: dropDownValue,
+                value: priorityDropDownValue,
                 items: const [
                   DropdownMenuItem(
                     value: 'High',
@@ -122,7 +134,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
                 onChanged: (value) {
                   setState(
                     () {
-                      dropDownValue = value as String;
+                      priorityDropDownValue = value as String;
                     },
                   );
                 },
@@ -142,32 +154,27 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
     );
   }
 
-  // Widget _datePicker(BuildContext context) {
-  //   return SafeArea(
-  //     child: SfDateRangePicker(
-  //       controller: DateRangePickerController(),
-  //       selectionMode: DateRangePickerSelectionMode.single,
-  //       showActionButtons: true,
-  //       onSubmit: (value) {
-  //         print((value as PickerDateRange).startDate);
-  //         String startDate =
-  //             '${value.startDate?.day}/${value.startDate?.month}';
-  //         String endDate = '${value.endDate?.day}/${value.endDate?.month}';
-  //         _deadlineCtrl.text = "$startDate - $endDate";
-  //         Navigator.pop(context);
-  //       },
-  //       confirmText: 'CONFIRM DATES',
-  //       showNavigationArrow: true,
-  //
-  //       onCancel: () {
-  //         print('cancelled');
-  //         Navigator.pop(context);
-  //       },
-  //
-  //
-  //       // confirmText: 'Confirm',
-  //       // cancelText: 'Back',
-  //     ),
-  //   );
-  // }
+  Widget _datePicker(BuildContext context) {
+    return SafeArea(
+      child: SfDateRangePicker(
+        controller: DateRangePickerController(),
+        selectionMode: DateRangePickerSelectionMode.single,
+        showActionButtons: true,
+        onSubmit: (value) {
+          ///Once Confirm Date, format date and update controller.
+          final DateFormat dateFormat = DateFormat('EEEE, dd MMM yyyy');
+          final selectedDate = DateTime.parse(value.toString());
+          _deadlineCtrl.text = dateFormat.format(selectedDate);
+
+          ///Dismiss the bottom sheet.
+          Navigator.pop(context);
+        },
+        confirmText: 'CONFIRM DATE',
+        showNavigationArrow: true,
+        onCancel: () {
+          Navigator.pop(context);
+        },
+      ),
+    );
+  }
 }

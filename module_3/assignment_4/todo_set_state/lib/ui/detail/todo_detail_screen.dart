@@ -229,7 +229,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
                         ),
                         ListTile(
                           title: const Text('Created At'),
-                          subtitle: Text(_dateFormat.format(DateTime.now())),
+                          subtitle: Text(_dateFormat.format(widget.todo.createdAt)),
                         ),
                         Padding(
                           padding:
