@@ -129,6 +129,30 @@ class RestApiService {
     }
   }
 
+  ///API call to retrieve a todos by ID.
+  Future<Todo> getTodoById({required String token, required Todo todo}) async {
+    ///Get token from local storage.
+    final localStorageService = LocalStorageService();
+    final token = await localStorageService.getAuthToken();
+
+    final response = await http.get(
+      Uri.parse('$todoApiBaseUrl/${todo.id}'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token'
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final raw = jsonDecode(response.body);
+      return Todo.fromJson(raw);
+    } else if (response.statusCode == 403) {
+      throw NotAuthorizedError();
+    } else {
+      throw GetTodoError('API Error getting todo id: ${todo.id}');
+    }
+  }
+
   /// API call to add a new todos for a particular user.
   Future<Todo> addNewTodo({required String token, required Todo todo}) async {
     final response = await http.post(
@@ -138,7 +162,7 @@ class RestApiService {
         'Authorization': 'Bearer $token'
       },
       //Todo: repair here.
-      body: jsonEncode(<String, String>{"description": ''}),
+      body: jsonEncode(<String, dynamic>{"description": ''}),
     );
 
     if (response.statusCode == 201) {
@@ -161,7 +185,7 @@ class RestApiService {
       },
 
       ///Todo: repair here.
-      body: jsonEncode(<String, String>{"description": ''}),
+      body: jsonEncode(<String, dynamic>{"description": ''}),
     );
 
     if (response.statusCode == 201) {
@@ -171,6 +195,30 @@ class RestApiService {
       throw NotAuthorizedError();
     } else {
       throw AddTodoError('API Error add new todo');
+    }
+  }
+
+  /// API call to update todos completion status.
+  Future<bool> updateTodoStatus(
+      {required String token,
+      required String id,
+      required bool isCompleted}) async {
+    final response = await http.put(
+      Uri.parse('$todoApiBaseUrl/$id'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token'
+      },
+      body: jsonEncode(<String, dynamic>{"isCompleted": isCompleted}),
+    );
+
+    if (response.statusCode == 200) {
+      // final raw = jsonDecode(response.body)['data'];
+      return true;
+    } else if (response.statusCode == 403) {
+      throw NotAuthorizedError();
+    } else {
+      throw UpdateTodoError('API Error to update todo completion status.');
     }
   }
 

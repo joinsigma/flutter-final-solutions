@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class TodoEditScreen extends StatefulWidget {
   const TodoEditScreen({Key? key}) : super(key: key);
@@ -60,22 +61,37 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextFormField(
-                controller: _descriptionCtrl,
-                decoration: InputDecoration(
-                  label: const Text('Deadline'),
-                  floatingLabelStyle: const TextStyle(fontSize: 20),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                onTap: () {
-                  ///Set date
-                },
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.all(8.0),
+            //   child: TextFormField(
+            //     readOnly: true,
+            //     onTap: () {
+            //       showModalBottomSheet(
+            //         shape: RoundedRectangleBorder(
+            //             borderRadius: BorderRadius.circular(16)),
+            //         context: context,
+            //         builder: (context) => _datePicker(context),
+            //       );
+            //     },
+            //     controller: _deadlineCtrl,
+            //     decoration: const InputDecoration(
+            //       prefixIcon: Icon(Icons.calendar_today),
+            //     ),
+            //   ),
+            //   // child: TextFormField(
+            //   //   controller: _descriptionCtrl,
+            //   //   decoration: InputDecoration(
+            //   //     label: const Text('Deadline'),
+            //   //     floatingLabelStyle: const TextStyle(fontSize: 20),
+            //   //     border: OutlineInputBorder(
+            //   //       borderRadius: BorderRadius.circular(10),
+            //   //     ),
+            //   //   ),
+            //   //   onTap: () {
+            //   //     ///Set date
+            //   //   },
+            //   // ),
+            // ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: DropdownButtonFormField(
@@ -117,9 +133,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
               child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red[400]),
-                  onPressed: () {
-
-                  },
+                  onPressed: () {},
                   child: const Text('Save Todo')),
             )
           ],
@@ -127,4 +141,33 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
       ),
     );
   }
+
+  // Widget _datePicker(BuildContext context) {
+  //   return SafeArea(
+  //     child: SfDateRangePicker(
+  //       controller: DateRangePickerController(),
+  //       selectionMode: DateRangePickerSelectionMode.single,
+  //       showActionButtons: true,
+  //       onSubmit: (value) {
+  //         print((value as PickerDateRange).startDate);
+  //         String startDate =
+  //             '${value.startDate?.day}/${value.startDate?.month}';
+  //         String endDate = '${value.endDate?.day}/${value.endDate?.month}';
+  //         _deadlineCtrl.text = "$startDate - $endDate";
+  //         Navigator.pop(context);
+  //       },
+  //       confirmText: 'CONFIRM DATES',
+  //       showNavigationArrow: true,
+  //
+  //       onCancel: () {
+  //         print('cancelled');
+  //         Navigator.pop(context);
+  //       },
+  //
+  //
+  //       // confirmText: 'Confirm',
+  //       // cancelText: 'Back',
+  //     ),
+  //   );
+  // }
 }

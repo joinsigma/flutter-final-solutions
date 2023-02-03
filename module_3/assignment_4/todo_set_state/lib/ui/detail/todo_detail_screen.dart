@@ -22,7 +22,9 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
   final DateFormat _dateFormat = DateFormat('EEEE, dd MMM yyyy');
   bool _isLoading = false;
   bool _isSessionExpired = false;
-  bool _isDeleteTodoApiError = false;
+  bool _isApiError = false;
+  bool _isMarkCompleted = false;
+
   ///Todo: Find explanation for this.
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -82,17 +84,17 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
                             } on DeleteTodoError catch (_) {
                               setState(() {
                                 _isLoading = false;
-                                _isDeleteTodoApiError = true;
+                                _isApiError = true;
                               });
                             }
                           },
-                          child: Text('Yes'),
+                          child: const Text('Yes'),
                         ),
                         TextButton(
                           onPressed: () {
                             Navigator.pop(context);
                           },
-                          child: Text('No'),
+                          child: const Text('No'),
                         ),
                       ],
                     );
@@ -104,7 +106,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
           )
         ],
       ),
-      body: _isDeleteTodoApiError
+      body: _isApiError
           ? Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -118,7 +120,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
                     height: 10.0,
                   ),
                   Text(
-                    'Error deleting Todo. Please try again later',
+                    'Error communicating with server. Please try again later',
                     style: TextStyle(color: Theme.of(context).primaryColor),
                     textAlign: TextAlign.center,
                   ),
@@ -136,15 +138,14 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
                           setState(() {
                             _isLoading = true;
                           });
-
+                          print('here');
                           ///Get Refresh Token and refresh session via API Service.
                           final refreshToken =
-                              await _localStorageService.getAuthToken();
+                              await _localStorageService.getRefreshToken();
                           final newAuthToken = await _restApiService
                               .refreshSession(refreshToken!);
-
                           ///Save new Auth Token
-                          _localStorageService.updateAuthToken(newAuthToken);
+                          final result = await _localStorageService.updateAuthToken(newAuthToken);
                           setState(() {
                             _isLoading = false;
                             _isSessionExpired = false;
@@ -227,7 +228,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
                           color: Colors.grey[400],
                         ),
                         ListTile(
-                          title: Text('Created At'),
+                          title: const Text('Created At'),
                           subtitle: Text(_dateFormat.format(DateTime.now())),
                         ),
                         Padding(
@@ -236,9 +237,64 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
                           child: ElevatedButton.icon(
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.red[400]),
-                            icon: const Icon(Icons.check),
-                            onPressed: () {},
-                            label: const Text('Mark as Completed'),
+                            // icon: _isMarkCompleted
+                            icon: widget.todo.isCompleted
+                                ? const Icon(Icons.close)
+                                : const Icon(Icons.check),
+                            onPressed: () async {
+                              try {
+                                final authToken =
+                                    await _localStorageService.getAuthToken();
+
+                                ///If true, call API to update todos isCompleted field as false.
+                                // if(_isMarkCompleted){
+                                if (widget.todo.isCompleted) {
+                                  setState(() {
+                                    _isLoading = true;
+                                  });
+                                  final result =
+                                      await _restApiService.updateTodoStatus(
+                                          token: authToken!,
+                                          id: widget.todo.id,
+                                          isCompleted: false);
+                                }
+
+                                ///If false, call API to update todos isCompleted field as true
+                                else {
+                                  setState(() {
+                                    _isLoading = true;
+                                  });
+                                  final result =
+                                      await _restApiService.updateTodoStatus(
+                                          token: authToken!,
+                                          id: widget.todo.id,
+                                          isCompleted: true);
+                                }
+                                if (mounted) {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const TodoListScreen(),
+                                    ),
+                                  );
+                                }
+                              } on UpdateTodoError catch (e) {
+                                setState(() {
+                                  _isLoading = false;
+                                  _isApiError = true;
+                                });
+                              } on NotAuthorizedError catch (e) {
+                                setState(() {
+                                  _isLoading = false;
+                                  _isSessionExpired = true;
+                                });
+                              }
+                            },
+                            // label: _isMarkCompleted
+                            label: widget.todo.isCompleted
+                                ? const Text('Mark as Pending')
+                                : const Text('Mark as Completed'),
                           ),
                         ),
                         Padding(

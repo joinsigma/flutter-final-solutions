@@ -16,9 +16,19 @@ class GetAllTodosError implements Exception {
   GetAllTodosError(this.message);
 }
 
+class GetTodoError implements Exception {
+  final String message;
+  GetTodoError(this.message);
+}
+
 class AddTodoError implements Exception {
   final String message;
   AddTodoError(this.message);
+}
+
+class UpdateTodoError implements Exception {
+  final String message;
+  UpdateTodoError(this.message);
 }
 
 class DeleteTodoError implements Exception {

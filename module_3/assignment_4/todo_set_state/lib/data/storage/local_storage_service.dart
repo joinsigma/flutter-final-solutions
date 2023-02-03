@@ -21,12 +21,13 @@ class LocalStorageService {
     }
   }
 
-  void updateAuthToken(String token) async {
+  Future<bool> updateAuthToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
     final isSaved = await prefs.setString(sharedPrefTokenKey, token);
-    if (!isSaved) {
-      throw AuthTokenErrorException();
-    }
+    // if (!isSaved) {
+    //   throw AuthTokenErrorException();
+    // }
+    return isSaved;
   }
 
   void saveRefreshToken(String token) async {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:todo_set_state/ui/listing/todo_item.dart';
+import 'package:todo_set_state/ui/listing/widgets/todo_item.dart';
 
-import '../../data/data.dart';
-import '../../data/model/todo.dart';
+import '../../../data/data.dart';
+import '../../../data/model/todo.dart';
 
 class TodoListView extends StatefulWidget {
   final List<Todo> todos;

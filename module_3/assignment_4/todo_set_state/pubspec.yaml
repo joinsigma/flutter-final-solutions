@@ -32,6 +32,7 @@ dependencies:
   http: ^0.13.4
   connectivity_plus: ^2.3.5
   shared_preferences: ^2.0.15
+#  syncfusion_flutter_datepicker: ^20.3.61
 
 
   # The following adds the Cupertino Icons font to your application.

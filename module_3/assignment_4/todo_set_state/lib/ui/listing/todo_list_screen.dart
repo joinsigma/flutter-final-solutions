@@ -4,7 +4,7 @@ import 'package:todo_set_state/data/network/rest_api_service.dart';
 import 'package:todo_set_state/data/storage/local_storage_service.dart';
 import 'package:todo_set_state/ui/authentication/authentication_screen.dart';
 import 'package:todo_set_state/ui/check_user_status_screen.dart';
-import 'package:todo_set_state/ui/listing/todo_listview.dart';
+import 'package:todo_set_state/ui/listing/widgets/todo_listview.dart';
 
 import '../../data/model/todo.dart';
 import '../add/todo_add_screen.dart';
@@ -102,16 +102,18 @@ class _TodoListScreenState extends State<TodoListScreen> {
                                 setState(() {
                                   _isLoading = false;
                                 });
-                                if (!mounted) return;
+                                // if (!mounted) return;
 
                                 ///Navigate to check user status screen.
-                                Navigator.pushReplacement(
+                                if(mounted) {
+                                  Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
                                         const CheckUserStatusScreen(),
                                   ),
                                 );
+                                }
                               },
                               child: const Text('Refresh'),
                             )
