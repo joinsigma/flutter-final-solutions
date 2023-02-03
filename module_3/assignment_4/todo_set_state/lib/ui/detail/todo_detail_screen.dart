@@ -139,13 +139,16 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
                             _isLoading = true;
                           });
                           print('here');
+
                           ///Get Refresh Token and refresh session via API Service.
                           final refreshToken =
                               await _localStorageService.getRefreshToken();
                           final newAuthToken = await _restApiService
                               .refreshSession(refreshToken!);
+
                           ///Save new Auth Token
-                          final result = await _localStorageService.updateAuthToken(newAuthToken);
+                          final result = await _localStorageService
+                              .updateAuthToken(newAuthToken);
                           setState(() {
                             _isLoading = false;
                             _isSessionExpired = false;
@@ -229,7 +232,16 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
                         ),
                         ListTile(
                           title: const Text('Created At'),
-                          subtitle: Text(_dateFormat.format(widget.todo.createdAt)),
+                          subtitle:
+                              Text(_dateFormat.format(widget.todo.createdAt)),
+                        ),
+                        Divider(
+                          color: Colors.grey[400],
+                        ),
+                        ListTile(
+                          title: const Text('Updated At'),
+                          subtitle:
+                          Text(_dateFormat.format(widget.todo.updatedAt)),
                         ),
                         Padding(
                           padding:
@@ -308,7 +320,8 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const TodoEditScreen(),
+                                  builder: (context) =>
+                                      TodoEditScreen(todo: widget.todo),
                                 ),
                               );
                             },
