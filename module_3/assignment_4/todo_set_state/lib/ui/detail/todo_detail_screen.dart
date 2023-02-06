@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_set_state/data/network/rest_api_service.dart';
 import 'package:todo_set_state/data/storage/local_storage_service.dart';
+import 'package:todo_set_state/ui/common/widgets/login_redirect_display.dart';
 import 'package:todo_set_state/ui/listing/todo_list_screen.dart';
 
 import '../../data/model/todo.dart';
@@ -68,7 +69,6 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
                                   await _localStorageService.getAuthToken();
                               final result = await _restApiService.deleteTodo(
                                   token: authToken!, id: widget.todo.id);
-                              print(result);
                               if (!mounted) return;
                               Navigator.pushReplacement(
                                 context,
@@ -128,37 +128,40 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
               ),
             )
           : _isSessionExpired
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text('Session expired, please refresh.'),
-                      ElevatedButton(
-                        onPressed: () async {
-                          setState(() {
-                            _isLoading = true;
-                          });
-                          print('here');
+              ? const LoginRedirectDisplay()
 
-                          ///Get Refresh Token and refresh session via API Service.
-                          final refreshToken =
-                              await _localStorageService.getRefreshToken();
-                          final newAuthToken = await _restApiService
-                              .refreshSession(refreshToken!);
-
-                          ///Save new Auth Token
-                          final result = await _localStorageService
-                              .updateAuthToken(newAuthToken);
-                          setState(() {
-                            _isLoading = false;
-                            _isSessionExpired = false;
-                          });
-                        },
-                        child: const Text('Refresh'),
-                      )
-                    ],
-                  ),
-                )
+              ///Todo: Remove this code.
+              // Center(
+              //             child: Column(
+              //               mainAxisAlignment: MainAxisAlignment.center,
+              //               children: [
+              //                 const Text('Session expired, please refresh.'),
+              //                 ElevatedButton(
+              //                   onPressed: () async {
+              //                     setState(() {
+              //                       _isLoading = true;
+              //                     });
+              //                     print('here');
+              //
+              //                     ///Get Refresh Token and refresh session via API Service.
+              //                     final refreshToken =
+              //                         await _localStorageService.getRefreshToken();
+              //                     final newAuthToken = await _restApiService
+              //                         .refreshSession(refreshToken!);
+              //
+              //                     ///Save new Auth Token
+              //                     final result = await _localStorageService
+              //                         .updateAuthToken(newAuthToken);
+              //                     setState(() {
+              //                       _isLoading = false;
+              //                       _isSessionExpired = false;
+              //                     });
+              //                   },
+              //                   child: const Text('Refresh'),
+              //                 )
+              //               ],
+              //             ),
+              //           )
               : _isLoading
                   ? const Center(
                       child: CircularProgressIndicator(),
@@ -241,7 +244,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
                         ListTile(
                           title: const Text('Updated At'),
                           subtitle:
-                          Text(_dateFormat.format(widget.todo.updatedAt)),
+                              Text(_dateFormat.format(widget.todo.updatedAt)),
                         ),
                         Padding(
                           padding:

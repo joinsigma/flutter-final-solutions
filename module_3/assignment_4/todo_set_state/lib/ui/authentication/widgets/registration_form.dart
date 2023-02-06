@@ -29,10 +29,9 @@ class _RegistrationFormState extends State<RegistrationForm> {
   late RestApiService _restApiService;
   late LocalStorageService _localStorageService;
   late TextEditingController _emailCtrl;
-  // late TextEditingController ageCtrl;
   late TextEditingController _passwordCtrl;
   late GlobalKey<FormState> _registerFormKey;
-  bool _isRegisterApiError = false;
+  bool _isApiError = false;
   bool _isLoading = false;
 
   @override
@@ -131,6 +130,10 @@ class _RegistrationFormState extends State<RegistrationForm> {
                           _localStorageService.saveToken(
                               authToken: result.authToken,
                               refreshToken: result.refreshToken);
+
+                          ///Save userId in local storage
+                          _localStorageService.saveUserId(result.uid);
+
                           if (!mounted) return;
 
                           ///If register successful navigate to TodoListScreen.
@@ -144,13 +147,19 @@ class _RegistrationFormState extends State<RegistrationForm> {
                           ///If unsuccessful update error message for display
                           setState(() {
                             _isLoading = false;
-                            _isRegisterApiError = true;
+                            _isApiError = true;
                           });
                         } on AuthTokenErrorException catch (_) {
                           ///If unsuccessful update error message for display
                           setState(() {
                             _isLoading = false;
-                            _isRegisterApiError = true;
+                            _isApiError = true;
+                          });
+                        } on UidErrorException catch (_) {
+                          ///If unsuccessful update error message for display
+                          setState(() {
+                            _isLoading = false;
+                            _isApiError = true;
                           });
                         }
                       }
@@ -163,7 +172,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
           ),
 
           ///Display error if error flag = true
-          if (_isRegisterApiError)
+          if (_isApiError)
             const Text(
               'Register API Error, please retry.',
               style: TextStyle(color: Colors.red),

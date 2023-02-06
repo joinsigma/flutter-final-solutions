@@ -2,6 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalStorageService {
   static const sharedPrefTokenKey = 'token';
+  static const sharedPrefUidKey = 'userId';
   static const sharedPrefRefreshTokenKey = 'refreshToken';
   static const sharedFirstTimeKey = 'isFirstTime';
   static const sharedEmailKey = 'email';
@@ -21,12 +22,17 @@ class LocalStorageService {
     }
   }
 
+  void saveUserId(String uid) async {
+    final prefs = await SharedPreferences.getInstance();
+    final isUserIdSaved = await prefs.setString(sharedPrefUidKey, uid);
+    if (isUserIdSaved == false) {
+      throw UidErrorException();
+    }
+  }
+
   Future<bool> updateAuthToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
     final isSaved = await prefs.setString(sharedPrefTokenKey, token);
-    // if (!isSaved) {
-    //   throw AuthTokenErrorException();
-    // }
     return isSaved;
   }
 
@@ -44,6 +50,12 @@ class LocalStorageService {
     return authToken;
   }
 
+  Future<String?> getUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    final uid = prefs.getString(sharedPrefUidKey);
+    return uid;
+  }
+
   Future<String?> getRefreshToken() async {
     final prefs = await SharedPreferences.getInstance();
     final refreshToken = prefs.getString(sharedPrefRefreshTokenKey);
@@ -58,6 +70,16 @@ class LocalStorageService {
       throw AuthTokenErrorException();
     }
   }
+
+  void deleteUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    final isUserIdRemoved = await prefs.remove(sharedPrefUidKey);
+    if (isUserIdRemoved == false) {
+      throw UidErrorException();
+    }
+  }
 }
 
 class AuthTokenErrorException implements Exception {}
+
+class UidErrorException implements Exception {}

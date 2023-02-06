@@ -4,6 +4,7 @@ enum Priority { high, medium, low }
 
 class Todo {
   final String id;
+  final String userId;
   final String title;
   final String description;
   final DateTime createdAt;
@@ -14,6 +15,7 @@ class Todo {
 
   Todo(
       {required this.id,
+      required this.userId,
       required this.title,
       required this.description,
       required this.createdAt,
@@ -25,6 +27,7 @@ class Todo {
   ///Convert from JSON to object
   Todo.fromJson(Map<String, dynamic> json)
       : id = json['id'],
+        userId = json['userId'],
         title = json['title'],
         description = json['description'],
         isCompleted = json['isCompleted'],
@@ -36,12 +39,13 @@ class Todo {
   ///Convert from object to JSON Map<String,dynamic>
   Map<String, dynamic> toJson() {
     return {
+      'userId': userId,
       'title': title,
       'description': description,
       'isCompleted': isCompleted,
-      'createdAt': createdAt,
-      'updatedAt': updatedAt,
-      'deadline': deadline,
+      'createdAt': createdAt.toString(),
+      'updatedAt': updatedAt.toString(),
+      'deadline': deadline.toString(),
       'priority': _assignPriorityString(priority)
     };
   }

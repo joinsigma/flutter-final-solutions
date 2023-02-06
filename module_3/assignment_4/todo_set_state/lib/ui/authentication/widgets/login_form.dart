@@ -26,7 +26,7 @@ class _LoginFormState extends State<LoginForm> {
   late RestApiService _restApiService;
   late LocalStorageService _localStorageService;
   late GlobalKey<FormState> _loginFormKey;
-  bool _isLoginApiError = false;
+  bool _isApiError = false;
   bool _isLoading = false;
 
   @override
@@ -117,6 +117,9 @@ class _LoginFormState extends State<LoginForm> {
                               authToken: result.authToken,
                               refreshToken: result.refreshToken);
 
+                          ///Save userId in local storage
+                          _localStorageService.saveUserId(result.uid);
+
                           ///If login successful navigate to TodoListScreen.
                           if (!mounted) return;
                           Navigator.pushReplacement(
@@ -129,13 +132,19 @@ class _LoginFormState extends State<LoginForm> {
                           ///If unsuccessful update error message for display
                           setState(() {
                             _isLoading = false;
-                            _isLoginApiError = true;
+                            _isApiError = true;
                           });
                         } on AuthTokenErrorException catch (_) {
                           ///If unsuccessful update error message for display
                           setState(() {
                             _isLoading = false;
-                            _isLoginApiError = true;
+                            _isApiError = true;
+                          });
+                        } on UidErrorException catch (_) {
+                          ///If unsuccessful update error message for display
+                          setState(() {
+                            _isLoading = false;
+                            _isApiError = true;
                           });
                         }
                       }
@@ -151,7 +160,7 @@ class _LoginFormState extends State<LoginForm> {
           ),
 
           ///Display error if error flag = true
-          if (_isLoginApiError)
+          if (_isApiError)
             const Text(
               'Login API Error, please retry.',
               style: TextStyle(color: Colors.red),
