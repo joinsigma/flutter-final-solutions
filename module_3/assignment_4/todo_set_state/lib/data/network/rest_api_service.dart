@@ -20,7 +20,6 @@ class RestApiService {
   static const headers = {'Content-Type': 'application/json'};
 
   /// API call for new user registration
-  // New user registration
   Future<User> registerWithEmailPassword({
     required String email,
     required String password,
@@ -50,7 +49,6 @@ class RestApiService {
   }
 
   /// API call for authenticating existing user
-  // User sign-in using email/password
   Future<User> signInUsingEmailPassword({
     required String email,
     required String password,
@@ -80,6 +78,7 @@ class RestApiService {
     throw UserLoginError('API Error during user sign-in process');
   }
 
+  ///Not needed.
   Future<String> refreshSession(String refreshToken) async {
     final response = await http.post(
       Uri.parse(refreshTokenUrl),
@@ -96,9 +95,6 @@ class RestApiService {
     if (response.statusCode == 200) {
       return raw['access_token'];
     } else {
-      print(refreshToken);
-      print(response.statusCode);
-      print(response.body);
       throw UserRefreshSessionError();
     }
   }
@@ -124,7 +120,6 @@ class RestApiService {
     } else if (response.statusCode == 403) {
       throw NotAuthorizedError();
     } else {
-      print(response.statusCode);
       throw GetAllTodosError('API Error getting all todos');
     }
   }
@@ -196,10 +191,7 @@ class RestApiService {
                 : "LOW"
       }),
     );
-
-    print(todo.description);
     if (response.statusCode == 200) {
-      // final raw = jsonDecode(response.body)['data'];
       return true;
     } else if (response.statusCode == 403) {
       throw NotAuthorizedError();
@@ -235,10 +227,7 @@ class RestApiService {
   Future<bool> deleteTodo({required String token, required String id}) async {
     final response = await http.delete(
       Uri.parse('$todoApiBaseUrl/$id'),
-      headers: {
-        // 'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token'
-      },
+      headers: {'Authorization': 'Bearer $token'},
     );
 
     if (response.statusCode == 200) {

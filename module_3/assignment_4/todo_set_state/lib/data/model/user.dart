@@ -1,8 +1,8 @@
 class User {
   final String uid;
   final String email;
-  final String refreshToken; // Firebase Auth refresh token
-  final String authToken; // Firebase Auth ID Token
+  final String refreshToken; // Auth refresh token
+  final String authToken; // Auth ID Token
   final String expiresIn; // Number of seconds where ID Token expires
 
   User({

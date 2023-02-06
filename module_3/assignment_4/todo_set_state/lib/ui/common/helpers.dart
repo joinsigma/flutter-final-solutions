@@ -1,9 +1,8 @@
 import 'package:intl/intl.dart';
-
 import '../../data/model/todo.dart';
 
 ///Helper
-mixin Helper {
+mixin Helpers {
   String assignDropDownPriorityValue(Priority priority) {
     String p;
 

@@ -3,7 +3,6 @@ import 'package:todo_set_state/data/network/exceptions.dart';
 import 'package:todo_set_state/data/network/rest_api_service.dart';
 import 'package:todo_set_state/data/storage/local_storage_service.dart';
 import 'package:todo_set_state/ui/authentication/authentication_screen.dart';
-import 'package:todo_set_state/ui/common/widgets/loading_indicator.dart';
 import 'package:todo_set_state/ui/common/widgets/login_redirect_display.dart';
 import 'package:todo_set_state/ui/listing/widgets/todo_listview.dart';
 
@@ -63,8 +62,6 @@ class _TodoListScreenState extends State<TodoListScreen> {
           )
         ],
       ),
-      // body: _isLoading
-      //     ? const LoadingIndicator()
       body: FutureBuilder<List<Todo>>(
           future: _restApiService.getAllTodos(),
           builder: (context, snapshot) {

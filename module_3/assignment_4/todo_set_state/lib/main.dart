@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:todo_set_state/ui/authentication/authentication_screen.dart';
 import 'package:todo_set_state/ui/check_user_status_screen.dart';
+import 'package:todo_set_state/ui/listing/todo_list_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -9,7 +9,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -25,6 +24,7 @@ class MyApp extends StatelessWidget {
             ),
       ),
       home: const CheckUserStatusScreen(),
+      // home: const TodoListScreen(),
     );
   }
 }

@@ -36,6 +36,8 @@ class _CheckUserStatusScreenState extends State<CheckUserStatusScreen> {
               } else {
                 return const AuthenticationScreen();
               }
+            } else {
+              return const AuthenticationScreen();
             }
           }
           return Container();

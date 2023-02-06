@@ -24,10 +24,9 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
   bool _isLoading = false;
   bool _isSessionExpired = false;
   bool _isApiError = false;
-  bool _isMarkCompleted = false;
 
   ///Todo: Find explanation for this.
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  // final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -40,7 +39,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
+      // key: _scaffoldKey,
       backgroundColor: Colors.red[50],
       appBar: AppBar(
         title: const Text('Todo Detail'),
@@ -51,7 +50,8 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
             child: GestureDetector(
               onTap: () async {
                 showDialog(
-                  context: _scaffoldKey.currentContext!,
+                  // context: _scaffoldKey.currentContext!,
+                  context: context,
                   builder: (context) {
                     return AlertDialog(
                       title: const Text('Delete Confirmation'),
@@ -129,39 +129,6 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
             )
           : _isSessionExpired
               ? const LoginRedirectDisplay()
-
-              ///Todo: Remove this code.
-              // Center(
-              //             child: Column(
-              //               mainAxisAlignment: MainAxisAlignment.center,
-              //               children: [
-              //                 const Text('Session expired, please refresh.'),
-              //                 ElevatedButton(
-              //                   onPressed: () async {
-              //                     setState(() {
-              //                       _isLoading = true;
-              //                     });
-              //                     print('here');
-              //
-              //                     ///Get Refresh Token and refresh session via API Service.
-              //                     final refreshToken =
-              //                         await _localStorageService.getRefreshToken();
-              //                     final newAuthToken = await _restApiService
-              //                         .refreshSession(refreshToken!);
-              //
-              //                     ///Save new Auth Token
-              //                     final result = await _localStorageService
-              //                         .updateAuthToken(newAuthToken);
-              //                     setState(() {
-              //                       _isLoading = false;
-              //                       _isSessionExpired = false;
-              //                     });
-              //                   },
-              //                   child: const Text('Refresh'),
-              //                 )
-              //               ],
-              //             ),
-              //           )
               : _isLoading
                   ? const Center(
                       child: CircularProgressIndicator(),

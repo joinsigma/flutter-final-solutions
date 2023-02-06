@@ -1,5 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'exceptions.dart';
+
 class LocalStorageService {
   static const sharedPrefTokenKey = 'token';
   static const sharedPrefUidKey = 'userId';
@@ -80,6 +82,4 @@ class LocalStorageService {
   }
 }
 
-class AuthTokenErrorException implements Exception {}
 
-class UidErrorException implements Exception {}

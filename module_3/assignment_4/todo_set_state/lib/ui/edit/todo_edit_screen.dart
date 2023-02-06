@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:todo_set_state/data/network/rest_api_service.dart';
 import 'package:todo_set_state/data/storage/local_storage_service.dart';
@@ -20,7 +19,7 @@ class TodoEditScreen extends StatefulWidget {
   State<TodoEditScreen> createState() => _TodoEditScreenState();
 }
 
-class _TodoEditScreenState extends State<TodoEditScreen> with Helper {
+class _TodoEditScreenState extends State<TodoEditScreen> with Helpers {
   late RestApiService _restApiService;
   late LocalStorageService _localStorageService;
   late TextEditingController _titleCtrl;
@@ -60,68 +59,10 @@ class _TodoEditScreenState extends State<TodoEditScreen> with Helper {
       ),
       body: _isApiError
           ? const ApiErrorDisplay()
-
-          ///Todo: Remove this.
-          // ? Center(
-          //     child: Column(
-          //       mainAxisAlignment: MainAxisAlignment.center,
-          //       children: [
-          //         Icon(
-          //           Icons.info_outline,
-          //           size: 40,
-          //           color: Theme.of(context).primaryColor,
-          //         ),
-          //         const SizedBox(
-          //           height: 10.0,
-          //         ),
-          //         Text(
-          //           'Error communicating with server. Please try again later',
-          //           style: TextStyle(color: Theme.of(context).primaryColor),
-          //           textAlign: TextAlign.center,
-          //         ),
-          //       ],
-          //     ),
-          //   )
           : _isSessionExpired
               ? const LoginRedirectDisplay()
-
-              ///Todo: Remove this code.
-              // Center(
-              //             child: Column(
-              //               mainAxisAlignment: MainAxisAlignment.center,
-              //               children: [
-              //                 const Text('Session expired, please refresh.'),
-              //                 ElevatedButton(
-              //                   onPressed: () async {
-              //                     setState(() {
-              //                       _isLoading = true;
-              //                     });
-              //                     print('here');
-              //
-              //                     ///Get Refresh Token and refresh session via API Service.
-              //                     final refreshToken =
-              //                         await _localStorageService.getRefreshToken();
-              //                     final newAuthToken = await _restApiService
-              //                         .refreshSession(refreshToken!);
-              //
-              //                     ///Save new Auth Token
-              //                     final result = await _localStorageService
-              //                         .updateAuthToken(newAuthToken);
-              //                     setState(() {
-              //                       _isLoading = false;
-              //                       _isSessionExpired = false;
-              //                     });
-              //                   },
-              //                   child: const Text('Refresh'),
-              //                 )
-              //               ],
-              //             ),
-              //           )
               : _isLoading
                   ? const LoadingIndicator()
-                  // ? const Center(
-                  //     child: CircularProgressIndicator(),
-                  //   )
                   : Form(
                       key: _editTodoFormKey,
                       child: ListView(
@@ -129,7 +70,6 @@ class _TodoEditScreenState extends State<TodoEditScreen> with Helper {
                           const SizedBox(
                             height: 5.0,
                           ),
-
                           /// Title text field
                           Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -353,25 +293,4 @@ class _TodoEditScreenState extends State<TodoEditScreen> with Helper {
       ),
     );
   }
-
-  ///Todo: remove this.
-  // ///Helper convert to mixin
-  // String _assignDropDownPriorityValue(Priority priority) {
-  //   String p;
-  //
-  //   switch (priority) {
-  //     case Priority.high:
-  //       p = 'High';
-  //       break;
-  //     case Priority.medium:
-  //       p = 'Medium';
-  //       break;
-  //     case Priority.low:
-  //       p = 'Low';
-  //       break;
-  //     default:
-  //       p = 'Low';
-  //   }
-  //   return p;
-  // }
 }

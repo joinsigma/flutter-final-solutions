@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../authentication/authentication_screen.dart';
 
 class LoginRedirectDisplay extends StatelessWidget {
