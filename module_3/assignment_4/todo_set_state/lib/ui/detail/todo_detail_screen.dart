@@ -26,7 +26,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
   bool _isApiError = false;
 
   ///Todo: Find explanation for this.
-  // final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -39,7 +39,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // key: _scaffoldKey,
+      key: _scaffoldKey,
       backgroundColor: Colors.red[50],
       appBar: AppBar(
         title: const Text('Todo Detail'),
@@ -50,8 +50,8 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
             child: GestureDetector(
               onTap: () async {
                 showDialog(
-                  // context: _scaffoldKey.currentContext!,
-                  context: context,
+                  context: _scaffoldKey.currentContext!,
+                  // context: context,
                   builder: (context) {
                     return AlertDialog(
                       title: const Text('Delete Confirmation'),
