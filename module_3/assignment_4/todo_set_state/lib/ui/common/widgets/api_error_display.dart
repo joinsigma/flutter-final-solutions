@@ -18,10 +18,10 @@ class ApiErrorDisplay extends StatelessWidget {
             height: 10.0,
           ),
           Text(
-            'Error communicating with server. Please try again later',
+            'Error communicating with server. \n Please try again later',
             style: TextStyle(color: Theme.of(context).primaryColor),
             textAlign: TextAlign.center,
-          ),
+          )
         ],
       ),
     );

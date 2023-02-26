@@ -31,16 +31,15 @@ class _CheckUserStatusScreenState extends State<CheckUserStatusScreen> {
             );
           } else if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasData) {
+              ///Auth token exist. User session is valid.
               if (snapshot.data != null) {
                 return const TodoListScreen();
-              } else {
-                return const AuthenticationScreen();
               }
-            } else {
-              return const AuthenticationScreen();
             }
+            return const AuthenticationScreen();
+          } else {
+            return const AuthenticationScreen();
           }
-          return Container();
         },
       ),
     );

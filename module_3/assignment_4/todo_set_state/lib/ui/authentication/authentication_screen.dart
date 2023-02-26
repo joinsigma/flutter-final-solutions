@@ -11,7 +11,7 @@ class AuthenticationScreen extends StatefulWidget {
 
 class _AuthenticationScreenState extends State<AuthenticationScreen> {
   late PageController _pageCtrl;
-  int _currentPage = 0;
+  int _currentPage=0;
 
   @override
   void initState() {
@@ -20,43 +20,27 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageView(
-        physics: const NeverScrollableScrollPhysics(),
         controller: _pageCtrl,
+        physics: const NeverScrollableScrollPhysics(),
         children: const [
           LoginPage(),
-          RegistrationPage(),
+          RegisterPage()
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentPage,
-        selectedItemColor: Colors.red[400],
-        onTap: (navItem) {
+        onTap: (navItem){
           setState(() {
+            _pageCtrl.jumpToPage(navItem);
             _currentPage = navItem;
-            _pageCtrl.animateToPage(
-              navItem,
-              duration: const Duration(milliseconds: 500),
-              curve: Curves.ease,
-            );
           });
         },
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.login),
-            label: "Login",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.touch_app),
-            label: "Register",
-          )
+          BottomNavigationBarItem(icon: Icon(Icons.login),label: "Login"),
+          BottomNavigationBarItem(icon: Icon(Icons.touch_app),label: "Register"),
         ],
       ),
     );

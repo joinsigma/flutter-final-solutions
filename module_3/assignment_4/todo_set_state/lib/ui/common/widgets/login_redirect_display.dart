@@ -10,10 +10,10 @@ class LoginRedirectDisplay extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text('Session expired, please refresh.'),
+          const Text('Session has expired, please referesh..'),
           ElevatedButton(
-            onPressed: () async {
-              ///Redirect user to Login screen.
+            onPressed: () {
+              ///Redirect user to Login Screen
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(

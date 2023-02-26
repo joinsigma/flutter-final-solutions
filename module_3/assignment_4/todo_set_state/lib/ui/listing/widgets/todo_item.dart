@@ -4,8 +4,8 @@ import '../../detail/todo_detail_screen.dart';
 
 class TodoItem extends StatelessWidget {
   final Todo todo;
-  TodoItem({Key? key, required this.todo}) : super(key: key);
-  final now = DateTime.now();
+  const TodoItem({Key? key, required this.todo}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -40,36 +40,31 @@ class TodoItem extends StatelessWidget {
                       ),
                       Text(
                         todo.description,
-                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                             decoration: todo.isCompleted
                                 ? TextDecoration.lineThrough
                                 : null),
+                        overflow: TextOverflow.ellipsis,
                       ),
                       Wrap(
                         children: [
                           _assignStatusChip(todo.priority),
-                          const SizedBox(
-                            width: 8,
-                          ),
-                          _assignTimelineStatusChip(todo.deadline),
-                          const SizedBox(
-                            width: 8,
-                          ),
+                          _assignTimelineStatusChip(todo.deadline)
                         ],
-                      ),
+                      )
                     ],
                   ),
                 ),
               ),
-              if (todo.isCompleted)
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Icon(
-                    Icons.check,
-                    color: Colors.green,
-                  ),
-                )
+              todo.isCompleted
+                  ? const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Icon(
+                  Icons.check,
+                  color: Colors.green,
+                ),
+              )
+                  : Container()
             ],
           ),
         ),
@@ -77,13 +72,14 @@ class TodoItem extends StatelessWidget {
     );
   }
 
-  ///Compare task priority and return the right status.
+  ///Helper
   Widget _assignStatusChip(Priority priority) {
     Widget p;
 
     switch (priority) {
       case Priority.high:
         p = Chip(
+          backgroundColor: Colors.purple[50],
           avatar: const Icon(
             Icons.priority_high,
             color: Colors.purple,
@@ -92,11 +88,11 @@ class TodoItem extends StatelessWidget {
             'High',
             style: TextStyle(color: Colors.purple),
           ),
-          backgroundColor: Colors.purple[50],
         );
         break;
       case Priority.medium:
         p = Chip(
+          backgroundColor: Colors.blue[50],
           avatar: const Icon(
             Icons.low_priority,
             color: Colors.blue,
@@ -105,11 +101,11 @@ class TodoItem extends StatelessWidget {
             'Medium',
             style: TextStyle(color: Colors.blue),
           ),
-          backgroundColor: Colors.blue[50],
         );
         break;
       case Priority.low:
         p = Chip(
+          backgroundColor: Colors.brown[50],
           avatar: const Icon(
             Icons.low_priority,
             color: Colors.brown,
@@ -118,11 +114,11 @@ class TodoItem extends StatelessWidget {
             'Low',
             style: TextStyle(color: Colors.brown),
           ),
-          backgroundColor: Colors.brown[50],
         );
         break;
       default:
         p = Chip(
+          backgroundColor: Colors.brown[50],
           avatar: const Icon(
             Icons.low_priority,
             color: Colors.brown,
@@ -131,20 +127,22 @@ class TodoItem extends StatelessWidget {
             'Low',
             style: TextStyle(color: Colors.brown),
           ),
-          backgroundColor: Colors.brown[50],
         );
     }
     return p;
   }
 
-  ///Compare today\'s date against task deadline and return the right status.
   Widget _assignTimelineStatusChip(DateTime deadline) {
     int deadlineEpoch = deadline.millisecondsSinceEpoch;
     DateTime now = DateTime.now();
+
     int todayEpoch =
         DateTime(now.year, now.month, now.day).millisecondsSinceEpoch;
+
     if (deadlineEpoch == todayEpoch) {
+      ///Deadline today
       return Chip(
+        backgroundColor: Colors.teal[50],
         avatar: const Icon(
           Icons.calendar_today,
           color: Colors.teal,
@@ -153,10 +151,11 @@ class TodoItem extends StatelessWidget {
           'Today',
           style: TextStyle(color: Colors.teal),
         ),
-        backgroundColor: Colors.teal[50],
       );
     } else if (deadlineEpoch > todayEpoch) {
+      ///Deadline upcoming
       return Chip(
+        backgroundColor: Colors.orange[50],
         avatar: const Icon(
           Icons.calendar_today,
           color: Colors.orange,
@@ -165,10 +164,11 @@ class TodoItem extends StatelessWidget {
           'Upcoming',
           style: TextStyle(color: Colors.orange),
         ),
-        backgroundColor: Colors.orange[50],
       );
     } else {
+      ///Deadline delayed
       return Chip(
+        backgroundColor: Colors.red[50],
         avatar: const Icon(
           Icons.calendar_today,
           color: Colors.red,
@@ -177,7 +177,6 @@ class TodoItem extends StatelessWidget {
           'Delayed',
           style: TextStyle(color: Colors.red),
         ),
-        backgroundColor: Colors.red[100],
       );
     }
   }

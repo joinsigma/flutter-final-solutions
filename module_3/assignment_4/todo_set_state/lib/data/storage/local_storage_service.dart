@@ -2,84 +2,60 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'exceptions.dart';
 
+
 class LocalStorageService {
   static const sharedPrefTokenKey = 'token';
   static const sharedPrefUidKey = 'userId';
-  static const sharedPrefRefreshTokenKey = 'refreshToken';
-  static const sharedFirstTimeKey = 'isFirstTime';
-  static const sharedEmailKey = 'email';
-  static const sharedPasswordKey = 'password';
 
-  //Todo: revisit this implementation to return bool value based on save result (true/false).
-
-  void saveToken(
-      {required String authToken, required String refreshToken}) async {
+  ///Save Auth Token
+  void saveToken(String authToken) async {
     final prefs = await SharedPreferences.getInstance();
     final isAuthTokenSaved =
-        await prefs.setString(sharedPrefTokenKey, authToken);
-    final isRefreshTokenSaved =
-        await prefs.setString(sharedPrefRefreshTokenKey, refreshToken);
-    if (isAuthTokenSaved && isRefreshTokenSaved == false) {
+    await prefs.setString(sharedPrefTokenKey, authToken);
+    if (!isAuthTokenSaved) {
       throw AuthTokenErrorException();
     }
   }
 
+  ///Saver User Id
   void saveUserId(String uid) async {
     final prefs = await SharedPreferences.getInstance();
-    final isUserIdSaved = await prefs.setString(sharedPrefUidKey, uid);
-    if (isUserIdSaved == false) {
+    final isUserIdSaved =
+    await prefs.setString(sharedPrefUidKey, uid);
+    if (!isUserIdSaved) {
       throw UidErrorException();
     }
   }
 
-  Future<bool> updateAuthToken(String token) async {
-    final prefs = await SharedPreferences.getInstance();
-    final isSaved = await prefs.setString(sharedPrefTokenKey, token);
-    return isSaved;
-  }
-
-  void saveRefreshToken(String token) async {
-    final prefs = await SharedPreferences.getInstance();
-    final isSaved = await prefs.setString(sharedPrefRefreshTokenKey, token);
-    if (!isSaved) {
-      throw AuthTokenErrorException();
-    }
-  }
-
+  ///getAuthToken
   Future<String?> getAuthToken() async {
     final prefs = await SharedPreferences.getInstance();
     final authToken = prefs.getString(sharedPrefTokenKey);
     return authToken;
   }
-
+  ///getUserId
   Future<String?> getUserId() async {
     final prefs = await SharedPreferences.getInstance();
     final uid = prefs.getString(sharedPrefUidKey);
     return uid;
   }
 
-  Future<String?> getRefreshToken() async {
+  /// delete Auth Token
+  void deleteToken() async{
     final prefs = await SharedPreferences.getInstance();
-    final refreshToken = prefs.getString(sharedPrefRefreshTokenKey);
-    return refreshToken;
-  }
-
-  void deleteToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    final isAuthTokenRemoved = await prefs.remove(sharedPrefTokenKey);
-    final isRefreshTokenRemoved = await prefs.remove(sharedPrefRefreshTokenKey);
-    if (isAuthTokenRemoved && isRefreshTokenRemoved == false) {
+    final isAuthTokenRemoved =
+    await prefs.remove(sharedPrefTokenKey);
+    if (!isAuthTokenRemoved) {
       throw AuthTokenErrorException();
     }
   }
-
-  void deleteUserId() async {
+  /// deleteUserId
+  void deleteUserId() async{
     final prefs = await SharedPreferences.getInstance();
-    final isUserIdRemoved = await prefs.remove(sharedPrefUidKey);
-    if (isUserIdRemoved == false) {
+    final isUserIdRemoved =
+    await prefs.remove(sharedPrefUidKey);
+    if (!isUserIdRemoved) {
       throw UidErrorException();
     }
   }
 }
-
-
