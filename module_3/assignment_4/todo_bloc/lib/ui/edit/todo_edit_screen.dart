@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
-import 'package:todo_set_state/data/network/rest_api_service.dart';
-import 'package:todo_set_state/ui/common/widgets/api_error_display.dart';
-import 'package:todo_set_state/ui/common/widgets/loading_indicator.dart';
-import 'package:todo_set_state/ui/common/widgets/login_redirect_display.dart';
-import 'package:todo_set_state/ui/listing/todo_list_screen.dart';
 
 import '../../data/model/todo.dart';
 import '../../data/network/exceptions.dart';
+import '../../data/network/rest_api_service.dart';
+import '../common/widgets/api_error_display.dart';
+import '../common/widgets/loading_indicator.dart';
+import '../common/widgets/login_redirect_display.dart';
+import '../listing/todo_list_screen.dart';
 
 class TodoEditScreen extends StatefulWidget {
   final Todo todo;
@@ -143,7 +143,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
                       border: OutlineInputBorder(
                           borderRadius:
                           BorderRadius.circular(10))),
-                  validator: (value) {
+                  validator: (String? value) {
                     if (value!.isEmpty) {
                       return 'Priority should not be empty';
                     }

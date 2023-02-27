@@ -16,26 +16,27 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   late TextEditingController _emailCtrl;
   late TextEditingController _passwordCtrl;
+  late GlobalKey<FormState> _loginFormKey;
   late RestApiService _restApiService;
   late LocalStorageService _localStorageService;
-  late GlobalKey<FormState> _loginFormKey;
+
   bool _isApiError = false;
   bool _isLoading = false;
 
   @override
   void initState() {
-    ///Initiate all variables
     _emailCtrl = TextEditingController();
     _passwordCtrl = TextEditingController();
+    _loginFormKey = GlobalKey<FormState>();
     _restApiService = RestApiService();
     _localStorageService = LocalStorageService();
-    _loginFormKey = GlobalKey<FormState>();
-
     super.initState();
   }
 
   @override
   void dispose() {
+    _emailCtrl.dispose();
+    _passwordCtrl.dispose();
     super.dispose();
   }
 
@@ -54,23 +55,24 @@ class _LoginPageState extends State<LoginPage> {
               color: Theme.of(context).primaryColor,
             ),
             const Text(
-              "Login to Todoist",
+              'Login to Todoist',
               style: TextStyle(fontSize: 30.0),
             ),
             const SizedBox(
               height: 30.0,
             ),
             TextFormField(
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please key in your email ID';
-                }
-              },
               controller: _emailCtrl,
               decoration: const InputDecoration(
                 icon: Icon(Icons.email),
                 label: Text('Email'),
               ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please key in your email ID';
+                }
+                return null;
+              },
             ),
             TextFormField(
               controller: _passwordCtrl,
@@ -79,84 +81,77 @@ class _LoginPageState extends State<LoginPage> {
                 icon: Icon(Icons.lock),
                 label: Text('Password'),
               ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please key in your correct password';
+                }
+                return null;
+              },
             ),
             const SizedBox(
               height: 30.0,
             ),
-
-            ///Loading indicator
             _isLoading
-                ? const LoadingIndicator()
+                ? const CircularProgressIndicator()
                 : SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red[400]),
-                      onPressed: () async {
-                        ///Validate form
-                        if (_loginFormKey.currentState!.validate()) {
-                          try {
-                            setState(() {
-                              _isLoading = true;
-                            });
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () async {
+                  ///Validate the form here
+                  if (_loginFormKey.currentState!.validate()) {
+                    try{
+                      setState(() {
+                        _isLoading = true;
+                      });
 
-                            ///Call API to Login.
-                            final result =
-                                await _restApiService.signInUsingEmailPassword(
-                                    email: _emailCtrl.text,
-                                    password: _passwordCtrl.text);
+                      ///Call API to Login
+                      final result =
+                      await _restApiService.signInUsingEmailPassword(
+                          email: _emailCtrl.text,
+                          password: _passwordCtrl.text);
 
-                            ///Save token in local storage
-                            _localStorageService.saveToken(
-                                authToken: result.authToken,
-                                refreshToken: result.refreshToken);
+                      ///Save the auth token in to local storage
+                      _localStorageService.saveToken(result.authToken);
 
-                            ///Save userId in local storage
-                            _localStorageService.saveUserId(result.uid);
+                      ///Save user Id in local storage
+                      _localStorageService.saveUserId(result.uid);
 
-                            ///If login successful navigate to TodoListScreen.
-                            if (!mounted) return;
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const TodoListScreen(),
-                              ),
-                            );
-                          } on UserLoginError catch (_) {
-                            ///If unsuccessful update error message for display
-                            setState(() {
-                              _isLoading = false;
-                              _isApiError = true;
-                            });
-                          } on AuthTokenErrorException catch (_) {
-                            ///If unsuccessful update error message for display
-                            setState(() {
-                              _isLoading = false;
-                              _isApiError = true;
-                            });
-                          } on UidErrorException catch (_) {
-                            ///If unsuccessful update error message for display
-                            setState(() {
-                              _isLoading = false;
-                              _isApiError = true;
-                            });
-                          }
-                        }
-                      },
-                      child: const Text(
-                        'Login',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
-            const SizedBox(
-              height: 20.0,
+                      ///Navigate to the Home Screen
+                      if(mounted) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const TodoListScreen(),
+                          ),
+                        );
+                      }
+                    }
+                    on UserLoginError catch(_){
+                      setState(() {
+                        _isLoading = false;
+                        _isApiError = true;
+                      });
+                    }
+                    on AuthTokenErrorException catch(_){
+                      setState(() {
+                        _isLoading = false;
+                        _isApiError = true;
+                      });
+                    }
+                    on UidErrorException catch(_){
+                      setState(() {
+                        _isLoading = false;
+                        _isApiError = true;
+                      });
+                    }
+                  }
+                },
+                child: const Text('Login'),
+              ),
             ),
-
-            ///Display error if error flag = true
             if (_isApiError)
               const Text(
-                'Login API Error, please retry.',
+                'Login API Error, please retry',
                 style: TextStyle(color: Colors.red),
               )
           ],

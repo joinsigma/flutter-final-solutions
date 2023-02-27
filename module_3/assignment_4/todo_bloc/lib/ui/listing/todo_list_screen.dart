@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:todo_set_state/data/network/exceptions.dart';
-import 'package:todo_set_state/data/network/rest_api_service.dart';
-import 'package:todo_set_state/data/storage/local_storage_service.dart';
-import 'package:todo_set_state/ui/authentication/authentication_screen.dart';
-import 'package:todo_set_state/ui/common/widgets/login_redirect_display.dart';
-import 'package:todo_set_state/ui/listing/widgets/todo_listview.dart';
+import 'package:flutter_todo_bloc/ui/listing/widgets/todo_listview.dart';
 
+import '../../data/model/todo.dart';
+import '../../data/network/exceptions.dart';
+import '../../data/network/rest_api_service.dart';
+import '../../data/storage/local_storage_service.dart';
 import '../add/todo_add_screen.dart';
+import '../authentication/authentication_screen.dart';
 import '../common/widgets/loading_indicator.dart';
+import '../common/widgets/login_redirect_display.dart';
 
 class TodoListScreen extends StatefulWidget {
   const TodoListScreen({Key? key}) : super(key: key);
@@ -53,7 +54,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
       ),
       body: FutureBuilder(
         future: _restApiService.getAllTodos(),
-        builder: (context, snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<List<Todo>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const LoadingIndicator();
           } else if (snapshot.connectionState == ConnectionState.done) {

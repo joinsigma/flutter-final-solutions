@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:todo_set_state/data/storage/local_storage_service.dart';
-import 'package:todo_set_state/ui/authentication/authentication_screen.dart';
-import 'package:todo_set_state/ui/listing/todo_list_screen.dart';
+import '../data/storage/local_storage_service.dart';
+import 'authentication/authentication_screen.dart';
+import 'listing/todo_list_screen.dart';
 
 class CheckUserStatusScreen extends StatefulWidget {
   const CheckUserStatusScreen({Key? key}) : super(key: key);

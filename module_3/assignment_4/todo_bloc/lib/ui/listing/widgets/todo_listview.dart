@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:todo_set_state/ui/listing/widgets/empty_todo_display.dart';
-import 'package:todo_set_state/ui/listing/widgets/todo_item.dart';
+import 'package:flutter_todo_bloc/ui/listing/widgets/todo_item.dart';
+
 import '../../../data/model/todo.dart';
+import 'empty_todo_display.dart';
 
 class TodoListView extends StatelessWidget {
   final List<Todo> todos;

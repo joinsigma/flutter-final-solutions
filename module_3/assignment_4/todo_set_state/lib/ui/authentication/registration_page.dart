@@ -6,35 +6,37 @@ import '../../data/storage/exceptions.dart';
 import '../../data/storage/local_storage_service.dart';
 import '../listing/todo_list_screen.dart';
 
-class RegistrationPage extends StatefulWidget {
-  const RegistrationPage({Key? key}) : super(key: key);
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({Key? key}) : super(key: key);
 
   @override
-  State<RegistrationPage> createState() => _RegistrationPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _RegistrationPageState extends State<RegistrationPage> {
-  late RestApiService _restApiService;
-  late LocalStorageService _localStorageService;
+class _RegisterPageState extends State<RegisterPage> {
   late TextEditingController _emailCtrl;
   late TextEditingController _passwordCtrl;
   late GlobalKey<FormState> _registerFormKey;
-  bool _isApiError = false;
+  late RestApiService _restApiService;
+  late LocalStorageService _localStorageService;
+
   bool _isLoading = false;
+  bool _isApiError = false;
 
   @override
   void initState() {
-    _restApiService = RestApiService();
-    _localStorageService = LocalStorageService();
     _emailCtrl = TextEditingController();
     _passwordCtrl = TextEditingController();
     _registerFormKey = GlobalKey<FormState>();
-
+    _restApiService = RestApiService();
+    _localStorageService = LocalStorageService();
     super.initState();
   }
 
   @override
   void dispose() {
+    _emailCtrl.dispose();
+    _passwordCtrl.dispose();
     super.dispose();
   }
 
@@ -53,103 +55,101 @@ class _RegistrationPageState extends State<RegistrationPage> {
               color: Theme.of(context).primaryColor,
             ),
             const Text(
-              "Register to Todoist",
+              'Register to Todoist',
               style: TextStyle(fontSize: 30.0),
             ),
             const SizedBox(
               height: 30.0,
             ),
-            TextField(
+            TextFormField(
               controller: _emailCtrl,
               decoration: const InputDecoration(
                 icon: Icon(Icons.email),
                 label: Text('Email'),
               ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please key in your email ID';
+                }
+                return null;
+              },
             ),
-            TextField(
-              controller: _passwordCtrl,
-              obscureText: true,
-              decoration: const InputDecoration(
-                icon: Icon(Icons.lock),
-                label: Text('Password'),
-              ),
-            ),
+            TextFormField(
+                controller: _passwordCtrl,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.lock),
+                  label: Text('Password'),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please key in your correct password';
+                  }
+                  return null;
+                }),
             const SizedBox(
               height: 30.0,
             ),
-            _isLoading
-                ? const LoadingIndicator()
-                : SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red[400]),
-                      onPressed: () async {
-                        ///Validate form
-                        if (_registerFormKey.currentState!.validate()) {
-                          try {
-                            ///Update state to loading
-                            setState(() {
-                              _isLoading = true;
-                            });
+            _isLoading ? const CircularProgressIndicator() :
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () async {
+                  ///Validate the form here
+                  if (_registerFormKey.currentState!.validate()) {
+                    try {
+                      ///Update loading state
+                      setState(() {
+                        _isLoading = true;
+                      });
 
-                            ///Call Register API
-                            final result =
-                                await _restApiService.registerWithEmailPassword(
-                                    email: _emailCtrl.text,
-                                    password: _passwordCtrl.text);
+                      ///Call Register API
+                      final result =
+                      await _restApiService.registerWithEmailPassword(
+                          email: _emailCtrl.text,
+                          password: _passwordCtrl.text);
 
-                            ///Save token in local storage
-                            _localStorageService.saveToken(
-                                authToken: result.authToken,
-                                refreshToken: result.refreshToken);
+                      ///Save the Auth Token
+                      _localStorageService.saveToken(result.authToken);
 
-                            ///Save userId in local storage
-                            _localStorageService.saveUserId(result.uid);
+                      ///Save the User Id
+                      _localStorageService.saveUserId(result.uid);
 
-                            if (!mounted) return;
-
-                            ///If register successful navigate to TodoListScreen.
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const TodoListScreen(),
-                              ),
-                            );
-                          } on UserRegistrationError catch (_) {
-                            ///If unsuccessful update error message for display
-                            setState(() {
-                              _isLoading = false;
-                              _isApiError = true;
-                            });
-                          } on AuthTokenErrorException catch (_) {
-                            ///If unsuccessful update error message for display
-                            setState(() {
-                              _isLoading = false;
-                              _isApiError = true;
-                            });
-                          } on UidErrorException catch (_) {
-                            ///If unsuccessful update error message for display
-                            setState(() {
-                              _isLoading = false;
-                              _isApiError = true;
-                            });
-                          }
-                        }
-                      },
-                      child: const Text('Register'),
-                    ),
-                  ),
-            const SizedBox(
-              height: 20.0,
+                      ///Navigate to home screen
+                      if (mounted) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const TodoListScreen(),
+                          ),
+                        );
+                      }
+                    } on UserRegistrationError catch (_) {
+                      setState(() {
+                        _isLoading = false;
+                        _isApiError = true;
+                      });
+                    }
+                    on AuthTokenErrorException catch (_) {
+                      setState(() {
+                        _isLoading = false;
+                        _isApiError = true;
+                      });
+                    }
+                    on UidErrorException catch (_) {
+                      setState(() {
+                        _isLoading = false;
+                        _isApiError = true;
+                      });
+                    }
+                  }
+                },
+                child: const Text('Register'),
+              ),
             ),
-
-            ///Display error if error flag = true
             if (_isApiError)
-              const Text(
-                'Register API Error, please retry.',
-                style: TextStyle(color: Colors.red),
-              )
+              const Text('Register API error, please retry.',
+                  style: TextStyle(color: Colors.red))
           ],
         ),
       ),

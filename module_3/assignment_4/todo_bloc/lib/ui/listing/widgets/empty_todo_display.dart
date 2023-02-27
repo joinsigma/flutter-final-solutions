@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class ApiErrorDisplay extends StatelessWidget {
-  const ApiErrorDisplay({Key? key}) : super(key: key);
+class EmptyTodoDisplay extends StatelessWidget {
+  const EmptyTodoDisplay({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,10 +18,10 @@ class ApiErrorDisplay extends StatelessWidget {
             height: 10.0,
           ),
           Text(
-            'Error communicating with server. \n Please try again later',
+            'You have no Todos at the moment. \nStart planning now.',
             style: TextStyle(color: Theme.of(context).primaryColor),
             textAlign: TextAlign.center,
-          )
+          ),
         ],
       ),
     );

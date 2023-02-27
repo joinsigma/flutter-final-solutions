@@ -34,20 +34,6 @@ class Todo {
         deadline = DateTime.parse(json['deadline']),
         priority = _assignPriorityEnum(json['priority']);
 
-  ///Convert from object to JSON Map<String,dynamic>
-  Map<String, dynamic> toJson() {
-    return {
-      'userId': userId,
-      'title': title,
-      'description': description,
-      'isCompleted': isCompleted,
-      'createdAt': createdAt.toString(),
-      'updatedAt': updatedAt.toString(),
-      'deadline': deadline.toString(),
-      'priority': _assignPriorityString(priority)
-    };
-  }
-
   ///Helper
   static _assignPriorityEnum(String jsonPriority) {
     Priority p;
@@ -63,24 +49,6 @@ class Todo {
         break;
       default:
         p = Priority.low;
-    }
-    return p;
-  }
-
-  static _assignPriorityString(Priority enumPriority) {
-    String p;
-    switch (enumPriority) {
-      case Priority.high:
-        p = "HIGH";
-        break;
-      case Priority.medium:
-        p = "MEDIUM";
-        break;
-      case Priority.low:
-        p = "LOW";
-        break;
-      default:
-        p = "LOW";
     }
     return p;
   }
