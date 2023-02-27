@@ -1,0 +1,47 @@
+import 'package:flutter/material.dart';
+import '../data/storage/local_storage_service.dart';
+import 'authentication/authentication_screen.dart';
+import 'listing/todo_list_screen.dart';
+
+class CheckUserStatusScreen extends StatefulWidget {
+  const CheckUserStatusScreen({Key? key}) : super(key: key);
+
+  @override
+  State<CheckUserStatusScreen> createState() => _CheckUserStatusScreenState();
+}
+
+class _CheckUserStatusScreenState extends State<CheckUserStatusScreen> {
+  late LocalStorageService _localStorageService;
+
+  @override
+  void initState() {
+    _localStorageService = LocalStorageService();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: FutureBuilder(
+        future: _localStorageService.getAuthToken(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasData) {
+              ///Auth token exist. User session is valid.
+              if (snapshot.data != null) {
+                return const TodoListScreen();
+              }
+            }
+            return const AuthenticationScreen();
+          } else {
+            return const AuthenticationScreen();
+          }
+        },
+      ),
+    );
+  }
+}
