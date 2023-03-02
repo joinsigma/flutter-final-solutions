@@ -1,7 +1,7 @@
+import 'package:flutter_todo_bloc/data/repository/exceptions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'exceptions.dart';
-
 
 class LocalStorageService {
   static const sharedPrefTokenKey = 'token';
@@ -11,51 +11,56 @@ class LocalStorageService {
   void saveToken(String authToken) async {
     final prefs = await SharedPreferences.getInstance();
     final isAuthTokenSaved =
-    await prefs.setString(sharedPrefTokenKey, authToken);
+        await prefs.setString(sharedPrefTokenKey, authToken);
     if (!isAuthTokenSaved) {
-      throw AuthTokenErrorException();
+      throw AuthTokenException();
     }
   }
 
   ///Saver User Id
   void saveUserId(String uid) async {
     final prefs = await SharedPreferences.getInstance();
-    final isUserIdSaved =
-    await prefs.setString(sharedPrefUidKey, uid);
+    final isUserIdSaved = await prefs.setString(sharedPrefUidKey, uid);
     if (!isUserIdSaved) {
-      throw UidErrorException();
+      throw UidException();
     }
   }
 
   ///getAuthToken
-  Future<String?> getAuthToken() async {
+  Future<String> getAuthToken() async {
     final prefs = await SharedPreferences.getInstance();
     final authToken = prefs.getString(sharedPrefTokenKey);
+    if (authToken == null) {
+      throw NoAuthTokenFoundException();
+    }
     return authToken;
   }
+
   ///getUserId
-  Future<String?> getUserId() async {
+  Future<String> getUserId() async {
     final prefs = await SharedPreferences.getInstance();
     final uid = prefs.getString(sharedPrefUidKey);
+    if (uid == null) {
+      throw NoUidFoundException();
+    }
     return uid;
   }
 
   /// delete Auth Token
-  void deleteToken() async{
+  void deleteToken() async {
     final prefs = await SharedPreferences.getInstance();
-    final isAuthTokenRemoved =
-    await prefs.remove(sharedPrefTokenKey);
+    final isAuthTokenRemoved = await prefs.remove(sharedPrefTokenKey);
     if (!isAuthTokenRemoved) {
-      throw AuthTokenErrorException();
+      throw AuthTokenException();
     }
   }
+
   /// deleteUserId
-  void deleteUserId() async{
+  void deleteUserId() async {
     final prefs = await SharedPreferences.getInstance();
-    final isUserIdRemoved =
-    await prefs.remove(sharedPrefUidKey);
+    final isUserIdRemoved = await prefs.remove(sharedPrefUidKey);
     if (!isUserIdRemoved) {
-      throw UidErrorException();
+      throw UidException();
     }
   }
 }

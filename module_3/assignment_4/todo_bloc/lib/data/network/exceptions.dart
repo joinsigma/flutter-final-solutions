@@ -4,29 +4,29 @@ class UserRegistrationError implements Exception {
   UserRegistrationError(this.message);
 }
 
-class UserLoginError implements Exception {
+class UserLoginException implements Exception {
   final String message;
-  UserLoginError(this.message);
+  UserLoginException(this.message);
 }
 
-class GetAllTodosError implements Exception {
+class GetAllTodosException implements Exception {
   final String message;
-  GetAllTodosError(this.message);
+  GetAllTodosException(this.message);
 }
 
-class UpdateTodoError implements Exception {
+class UpdateTodoException implements Exception {
   final String message;
-  UpdateTodoError(this.message);
+  UpdateTodoException(this.message);
 }
 
-class AddTodoError implements Exception {
+class AddTodoException implements Exception {
   final String message;
-  AddTodoError(this.message);
+  AddTodoException(this.message);
 }
 
-class DeleteTodoError implements Exception {
+class DeleteTodoException implements Exception {
   final String message;
-  DeleteTodoError(this.message);
+  DeleteTodoException(this.message);
 }
 
-class NotAuthorizedError implements Exception {}
+class NotAuthorizedException implements Exception {}

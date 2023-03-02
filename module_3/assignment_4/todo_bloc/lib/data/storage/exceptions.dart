@@ -1,4 +1,4 @@
 ///Local Storage Service exceptions
-class AuthTokenErrorException implements Exception {}
+class AuthTokenException implements Exception {}
 
-class UidErrorException implements Exception {}
+class UidException implements Exception {}

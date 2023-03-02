@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_todo_bloc/ui/listing/bloc/todo_list_bloc.dart';
+import 'package:flutter_todo_bloc/ui/listing/bloc/todo_list_event.dart';
+import 'package:flutter_todo_bloc/ui/listing/bloc/todo_list_state.dart';
 import 'package:flutter_todo_bloc/ui/listing/widgets/todo_listview.dart';
 
-import '../../data/model/todo.dart';
-import '../../data/network/exceptions.dart';
-import '../../data/network/rest_api_service.dart';
-import '../../data/storage/local_storage_service.dart';
 import '../add/todo_add_screen.dart';
 import '../authentication/authentication_screen.dart';
+import '../common/widgets/api_error_display.dart';
 import '../common/widgets/loading_indicator.dart';
 import '../common/widgets/login_redirect_display.dart';
+import 'package:kiwi/kiwi.dart' as kiwi;
+
+import '../common/widgets/network_error_display.dart';
 
 class TodoListScreen extends StatefulWidget {
   const TodoListScreen({Key? key}) : super(key: key);
@@ -18,76 +22,75 @@ class TodoListScreen extends StatefulWidget {
 }
 
 class _TodoListScreenState extends State<TodoListScreen> {
-  late RestApiService _restApiService;
-  late LocalStorageService _localStorageService;
+  late TodoListBloc _todoListBloc;
 
   @override
   void initState() {
-    _restApiService = RestApiService();
-    _localStorageService = LocalStorageService();
+    _todoListBloc = kiwi.KiwiContainer().resolve<TodoListBloc>();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.red[50],
-      appBar: AppBar(
-        title: const Text('My Todos'),
-        actions: [
-          GestureDetector(
-            onTap: () {
-              _localStorageService.deleteToken();
-              _localStorageService.deleteUserId();
-
+    return BlocProvider(
+      create: (context) => _todoListBloc,
+      child: Scaffold(
+        backgroundColor: Colors.red[50],
+        appBar: AppBar(
+          title: const Text('My Todos'),
+          actions: [
+            GestureDetector(
+              onTap: () {
+                ///Add event
+                _todoListBloc.add(TriggerLogout());
+              },
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Icon(Icons.logout),
+              ),
+            )
+          ],
+        ),
+        body: BlocConsumer(
+          listener: (context, state) {
+            if (state is LoggedOut) {
               Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const AuthenticationScreen()));
-            },
-            child: const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Icon(Icons.logout),
-            ),
-          )
-        ],
-      ),
-      body: FutureBuilder(
-        future: _restApiService.getAllTodos(),
-        builder: (BuildContext context, AsyncSnapshot<List<Todo>> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const LoadingIndicator();
-          } else if (snapshot.connectionState == ConnectionState.done) {
-            ///Check for Error
-            if (snapshot.hasError) {
-              if (snapshot.error is NotAuthorizedError) {
-                return const LoginRedirectDisplay();
-              }
-              return Center(
-                child: Text(snapshot.error.toString()),
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AuthenticationScreen(),
+                ),
               );
             }
-
-            ///Check for data
-            else if (snapshot.hasData) {
-              var todos = snapshot.data!;
-              return TodoListView(todos: todos);
+          },
+          builder: (context, state) {
+            if (state is TodoListLoading) {
+              return const LoadingIndicator();
+            } else if (state is TodoListSuccess) {
+              return TodoListView(todos: state.todos);
+            } else if (state is TodoListFailure) {
+              if (state.isNetworkError) {
+                return const NetworkErrorDisplay();
+              } else if (state.isSessionExpired) {
+                return const LoginRedirectDisplay();
+              } else if (state.isApiError) {
+                return const ApiErrorDisplay();
+              }
             }
-          }
-          return Container();
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Theme.of(context).primaryColor,
-        child: const Icon(Icons.add),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const TodoAddScreen(),
-            ),
-          );
-        },
+            return Container();
+          },
+        ),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Theme.of(context).primaryColor,
+          child: const Icon(Icons.add),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const TodoAddScreen(),
+              ),
+            );
+          },
+        ),
       ),
     );
   }

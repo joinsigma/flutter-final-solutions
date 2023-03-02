@@ -50,16 +50,12 @@ class RestApiService {
     if (response.statusCode == 200) {
       return User.fromJson(raw);
     } else {
-      throw UserLoginError("API Error during user registration");
+      throw UserLoginException("API Error during user registration");
     }
   }
 
   ///API call to retrieve all todos for a particular user
-  Future<List<Todo>> getAllTodos() async {
-    ///Get token from the local storage
-    final localStorageService = LocalStorageService();
-    final token = await localStorageService.getAuthToken();
-
+  Future<List<Todo>> getAllTodos(token) async {
     final response = await http.get(Uri.parse(todoApiBaseUrl), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token'
@@ -70,18 +66,14 @@ class RestApiService {
       List<Todo> todos = raw.map<Todo>((data) => Todo.fromJson(data)).toList();
       return todos;
     } else if (response.statusCode == 403) {
-      throw NotAuthorizedError();
+      throw NotAuthorizedException();
     } else {
-      throw GetAllTodosError('API Error getting all todos');
+      throw GetAllTodosException('API Error getting all todos');
     }
   }
 
   ///API call to add a new todos for a particular user
-  Future<bool> addNewTodo(Todo todo) async {
-    ///Get token from the local storage
-    final localStorageService = LocalStorageService();
-    final token = await localStorageService.getAuthToken();
-
+  Future<bool> addNewTodo({required String token, required Todo todo}) async {
     final response = await http.post(
       Uri.parse(todoApiBaseUrl),
       headers: {
@@ -99,8 +91,8 @@ class RestApiService {
           "priority": todo.priority == Priority.high
               ? "HIGH"
               : todo.priority == Priority.medium
-              ? "MEDIUM"
-              : "LOW",
+                  ? "MEDIUM"
+                  : "LOW",
           "isCompleted": todo.isCompleted
         },
       ),
@@ -109,20 +101,18 @@ class RestApiService {
     if (response.statusCode == 201) {
       return true;
     } else if (response.statusCode == 403) {
-      throw NotAuthorizedError();
+      throw NotAuthorizedException();
     } else {
       print(response.body);
-      throw AddTodoError('API Error add new todo');
+      throw AddTodoException('API Error add new todo');
     }
   }
 
   ///API call to update todos completion status
   Future<bool> updateTodoStatus(
-      {required String id, required bool isCompleted}) async {
-    ///Get token from the local storage
-    final localStorageService = LocalStorageService();
-    final token = await localStorageService.getAuthToken();
-
+      {required String token,
+      required String id,
+      required bool isCompleted}) async {
     final response = await http.put(Uri.parse('$todoApiBaseUrl/$id'),
         headers: {
           'Content-Type': 'application/json',
@@ -133,18 +123,14 @@ class RestApiService {
     if (response.statusCode == 200) {
       return true;
     } else if (response.statusCode == 403) {
-      throw NotAuthorizedError();
+      throw NotAuthorizedException();
     } else {
-      throw UpdateTodoError('API Error to update todo completion status');
+      throw UpdateTodoException('API Error to update todo completion status');
     }
   }
 
   ///API call to delete a todos for a particular user
-  Future<bool> deleteTodo(String id) async {
-    ///Get token from the local storage
-    final localStorageService = LocalStorageService();
-    final token = await localStorageService.getAuthToken();
-
+  Future<bool> deleteTodo({required String token, required String id}) async {
     final response = await http.delete(
       Uri.parse('$todoApiBaseUrl/$id'),
       headers: {
@@ -156,18 +142,14 @@ class RestApiService {
     if (response.statusCode == 200) {
       return true;
     } else if (response.statusCode == 403) {
-      throw NotAuthorizedError();
+      throw NotAuthorizedException();
     } else {
-      throw DeleteTodoError('API Error to delete todo');
+      throw DeleteTodoException('API Error to delete todo');
     }
   }
 
   /// API call to update an existing todos for a particular user
-  Future<bool> updateTodo(Todo todo) async {
-    ///Get token from the local storage
-    final localStorageService = LocalStorageService();
-    final token = await localStorageService.getAuthToken();
-
+  Future<bool> updateTodo({required String token, required Todo todo}) async {
     final response = await http.put(
       Uri.parse('$todoApiBaseUrl/${todo.id}'),
       headers: {
@@ -184,8 +166,8 @@ class RestApiService {
           "priority": todo.priority == Priority.high
               ? "HIGH"
               : todo.priority == Priority.medium
-              ? "MEDIUM"
-              : "LOW",
+                  ? "MEDIUM"
+                  : "LOW",
           "isCompleted": todo.isCompleted
         },
       ),
@@ -194,9 +176,9 @@ class RestApiService {
     if (response.statusCode == 200) {
       return true;
     } else if (response.statusCode == 403) {
-      throw NotAuthorizedError();
+      throw NotAuthorizedException();
     } else {
-      throw UpdateTodoError('API Error to update edited todo');
+      throw UpdateTodoException('API Error to update edited todo');
     }
   }
 }
