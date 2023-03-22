@@ -20,6 +20,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     try {
       await _userRepository.loginUser(
           email: event.email, password: event.password);
+      emit(LoginSuccess());
     } on UserLoginException catch (_) {
       emit(
         const LoginFailure(

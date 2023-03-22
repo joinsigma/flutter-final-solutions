@@ -52,4 +52,12 @@ class UserRepository extends BaseRepository {
     final uid = await _localStorageService.getUserId();
     return uid;
   }
+
+  void deleteUserToken() async {
+    _localStorageService.deleteToken();
+  }
+
+  void deleteUserId() async {
+    _localStorageService.deleteUserId();
+  }
 }

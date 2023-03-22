@@ -9,3 +9,5 @@ abstract class TodoListEvent extends Equatable {
 class LoadTodoList extends TodoListEvent{}
 
 class TriggerLogout extends TodoListEvent{}
+
+class ResetToken extends TodoListEvent {}

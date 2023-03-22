@@ -27,6 +27,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
   @override
   void initState() {
     _todoListBloc = kiwi.KiwiContainer().resolve<TodoListBloc>();
+    _todoListBloc.add(LoadTodoList());
     super.initState();
   }
 
@@ -51,7 +52,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
             )
           ],
         ),
-        body: BlocConsumer(
+        body: BlocConsumer<TodoListBloc, TodoListState>(
           listener: (context, state) {
             if (state is LoggedOut) {
               Navigator.pushReplacement(
@@ -71,6 +72,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
               if (state.isNetworkError) {
                 return const NetworkErrorDisplay();
               } else if (state.isSessionExpired) {
+                // _todoListBloc.add(ResetToken());
                 return const LoginRedirectDisplay();
               } else if (state.isApiError) {
                 return const ApiErrorDisplay();

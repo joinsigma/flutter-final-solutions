@@ -12,6 +12,7 @@ class LocalStorageService {
     final prefs = await SharedPreferences.getInstance();
     final isAuthTokenSaved =
         await prefs.setString(sharedPrefTokenKey, authToken);
+
     if (!isAuthTokenSaved) {
       throw AuthTokenException();
     }

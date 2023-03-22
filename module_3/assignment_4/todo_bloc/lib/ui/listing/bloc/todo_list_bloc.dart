@@ -7,15 +7,23 @@ import '../../../data/network/exceptions.dart';
 import '../../../data/repository/base_repository.dart';
 import '../../../data/repository/exceptions.dart';
 import '../../../data/repository/todo_repository.dart';
+import '../../../data/repository/user_repository.dart';
 import '../../../data/storage/local_storage_service.dart';
 
 class TodoListBloc extends Bloc<TodoListEvent, TodoListState> {
   final TodoRepository _todoRepository;
-  final LocalStorageService _localStorageService;
-  TodoListBloc(this._todoRepository, this._localStorageService)
-      : super(TodoListLoading()) {
+  final UserRepository _userRepository;
+  TodoListBloc(
+    this._todoRepository,
+    this._userRepository,
+  ) : super(TodoListLoading()) {
     on<LoadTodoList>(_onLoadTodoList);
     on<TriggerLogout>(_onTriggerLogout);
+    on<ResetToken>(_onResetToken);
+  }
+
+  void _onResetToken(ResetToken event, Emitter<TodoListState> emit) async {
+    _userRepository.deleteUserToken();
   }
 
   void _onLoadTodoList(LoadTodoList event, Emitter<TodoListState> emit) async {
@@ -41,8 +49,8 @@ class TodoListBloc extends Bloc<TodoListEvent, TodoListState> {
       TriggerLogout event, Emitter<TodoListState> emit) async {
     emit(TodoListLoading());
     try {
-      _localStorageService.deleteUserId();
-      _localStorageService.deleteUserId();
+      _userRepository.deleteUserId();
+      _userRepository.deleteUserToken();
       emit(LoggedOut());
     } on AuthTokenException catch (_) {
       emit(const TodoListFailure(

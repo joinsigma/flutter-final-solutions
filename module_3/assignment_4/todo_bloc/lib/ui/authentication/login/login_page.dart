@@ -43,12 +43,14 @@ class _LoginPageState extends State<LoginPage> {
       create: (context) => _loginBloc,
       child: BlocConsumer<LoginBloc, LoginState>(
         listener: (context, state) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const TodoListScreen(),
-            ),
-          );
+          if (state is LoginSuccess) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const TodoListScreen(),
+              ),
+            );
+          }
         },
         builder: (context, state) {
           if (state is LoginLoading) {

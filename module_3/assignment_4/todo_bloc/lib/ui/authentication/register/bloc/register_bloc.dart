@@ -19,6 +19,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     try {
       await _userRepository.registerUser(
           email: event.email, password: event.password);
+      emit(RegisterSuccess());
     } on UserRegistrationError catch (_) {
       emit(
         const RegisterFailure(

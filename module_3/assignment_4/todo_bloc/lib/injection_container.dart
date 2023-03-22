@@ -75,7 +75,7 @@ void initKiwi() {
   container.registerFactory(
     (c) => TodoListBloc(
       c.resolve<TodoRepository>(),
-      c.resolve<LocalStorageService>(),
+      c.resolve<UserRepository>(),
     ),
   );
 }

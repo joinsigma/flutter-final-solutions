@@ -40,7 +40,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => _registerBloc,
-      child: BlocConsumer(
+      child: BlocConsumer<RegisterBloc, RegisterState>(
         listener: (context, state) {
           if (state is RegisterSuccess) {
             Navigator.pushReplacement(
