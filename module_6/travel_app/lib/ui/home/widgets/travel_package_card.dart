@@ -1,56 +1,64 @@
 import 'package:flutter/material.dart';
+
 class TravelPackageCard extends StatelessWidget {
-  final VoidCallback onTap;
-  const TravelPackageCard({Key? key,required this.onTap}) : super(key: key);
-  final imgUrl =
-      'https://upload.wikimedia.org/wikipedia/commons/4/4b/La_Tour_Eiffel_vue_de_la_Tour_Saint-Jacques%2C_Paris_ao%C3%BBt_2014_%282%29.jpg';
+  final String title;
+  final bool isFavourite;
+  final String location;
+  final int price;
+  final String imgUrl;
+  final List<String> tags;
+  const TravelPackageCard(
+      {Key? key,
+      required this.title,
+      required this.isFavourite,
+      required this.tags,
+      required this.imgUrl,
+      required this.price,
+      required this.location})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Card(
           elevation: 4.0,
           color: Color(0xFFF5F5F5),
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: 20.0, vertical: 10.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Image.network(imgUrl,
-                    width: double.infinity, height: 250),
+                Image.network(imgUrl, width: double.infinity, height: 250),
                 Row(
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(
-                          width:
-                          MediaQuery.of(context).size.width * 0.7,
-                          child: const Text(
-                            '3D2N Langkawi Tour, 3D2N Langkawi Tour, 3D2N Langkawi Tour',
-                            style: TextStyle(
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.bold),
+                          width: MediaQuery.of(context).size.width * 0.7,
+                          child: Text(
+                            title,
+                            style: const TextStyle(
+                                fontSize: 18.0, fontWeight: FontWeight.bold),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 5.0,
                         ),
                         Text(
-                          'Langkawi, Malaysia',
-                          style: TextStyle(fontSize: 16.0),
+                          location,
+                          style: const TextStyle(fontSize: 16.0),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 5.0,
                         ),
                         Text(
-                          'RM300/person',
-                          style: TextStyle(
+                          'RM$price/person',
+                          style: const TextStyle(
                               color: Colors.orangeAccent,
                               fontWeight: FontWeight.bold,
                               fontSize: 15.0),
@@ -58,35 +66,60 @@ class TravelPackageCard extends StatelessWidget {
                       ],
                     ),
                     const Spacer(),
-                    const Icon(
+                   isFavourite ? const Icon(
                       Icons.favorite,
                       color: Colors.redAccent,
                       size: 30.0,
-                    )
+                    ): const Icon(
+                     Icons.favorite_outline,
+                     color: Colors.redAccent,
+                     size: 30.0,
+                   )
                   ],
                 ),
                 Wrap(
                   spacing: 5.0,
-                  children: const [
-                    Chip(
-                        backgroundColor: Colors.orange,
-                        label: Text(
-                          'Eagle Feeding',
-                          style: TextStyle(color: Colors.white),
-                        )),
-                    Chip(
-                      label: Text('Cable car'),
-                    ),
-                    Chip(
-                      label: Text('Island hopping'),
-                    ),
-                  ],
+                  children: _buildTags(tags),
                 )
+                // Wrap(
+                //   spacing: 5.0,
+                //   children: const [
+                //     Chip(
+                //       backgroundColor: Colors.orange,
+                //       label: Text(
+                //         'Eagle Feeding',
+                //         style: TextStyle(color: Colors.white),
+                //       ),
+                //     ),
+                //     Chip(
+                //       label: Text('Cable car'),
+                //     ),
+                //     Chip(
+                //       label: Text('Island hopping'),
+                //     ),
+                //   ],
+                // )
               ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  List<Chip> _buildTags(List<String> tags) {
+    List<Chip> chips = [];
+    for (var t in tags) {
+      chips.add(
+        Chip(
+          backgroundColor: Colors.orange,
+          label: Text(
+            t,
+            style: const TextStyle(color: Colors.white),
+          ),
+        ),
+      );
+    }
+    return chips;
   }
 }

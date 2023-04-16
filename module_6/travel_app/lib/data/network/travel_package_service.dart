@@ -1,0 +1,84 @@
+import 'package:travel_app/data/model/detail_package.dart';
+
+import '../model/package.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class TravelPackageService {
+  Future<List<Package>> getPackages() async {
+    CollectionReference packages =
+        FirebaseFirestore.instance.collection('packages');
+    final result = await packages.get();
+    List<Package> pkgs = [];
+
+    for (var doc in result.docs) {
+      // print(doc['description']);
+      final package = Package(
+          id: doc.id,
+          title: doc['title'],
+          location: doc['location'],
+          imgUrl: doc['main_img_url'],
+          price: doc['price_per_pax'],
+          tags: List<String>.from(doc['tags']));
+      pkgs.add(package);
+    }
+    return pkgs;
+    // FirebaseFirestore.instance
+    //     .collection('packages')
+    //     .get()
+    //     .then((QuerySnapshot querySnapshot) {
+    //       // print(querySnapshot.docs['tags']);
+    //   querySnapshot.docs.forEach((doc) {
+    //     print(doc['title']);
+    //     print(doc['tags']);
+    //   });
+    // });
+  }
+
+  Future<DetailPackage> getDetailPackage(String id) async {
+    CollectionReference packages =
+        FirebaseFirestore.instance.collection('packages');
+    final result = await packages.doc(id).get();
+
+    final detailPackage = DetailPackage(
+        id: result.id,
+        title: result['title'],
+        description: result['description'],
+        mealInfo: result['meal_info'],
+        location: result['location'],
+        imgUrls: List<String>.from(result['extra_img_url']),
+        price: result['price_per_pax'],
+        provider: result['provider'],
+        rating: result['rating'],
+        itineraries: result['itinerary']
+            .map<Itinerary>((json) => Itinerary(
+                title: json['title'], description: json['description']))
+            .toList(),
+        tags: List<String>.from(result['tags']));
+    print(detailPackage.id);
+    print(detailPackage.title);
+    return detailPackage;
+    // for (var doc in result.docs) {
+    //   // print(doc['description']);
+    //   final package = Package(
+    //       id: doc.id,
+    //       title: doc['title'],
+    //       location: doc['location'],
+    //       imgUrl: doc['main_img_url'],
+    //       price: doc['price_per_pax'],
+    //       tags: List<String>.from(doc['tags']));
+    //   pkgs.add(package);
+    // }
+    // return pkgs;
+    // FirebaseFirestore.instance
+    //     .collection('packages')
+    //     .get()
+    //     .then((QuerySnapshot querySnapshot) {
+    //       // print(querySnapshot.docs['tags']);
+    //   querySnapshot.docs.forEach((doc) {
+    //     print(doc['title']);
+    //     print(doc['tags']);
+    //   });
+    // });
+  }
+}

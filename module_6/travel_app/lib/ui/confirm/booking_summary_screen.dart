@@ -9,6 +9,7 @@ class BookingSummaryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        foregroundColor: Colors.white,
         title: const Text('Booking Summary'),
       ),
       body: ListView(

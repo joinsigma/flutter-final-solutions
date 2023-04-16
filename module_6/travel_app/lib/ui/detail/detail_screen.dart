@@ -1,178 +1,193 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kiwi/kiwi.dart' as kiwi;
+import 'package:travel_app/ui/detail/detail_bloc.dart';
 
+import '../../data/model/detail_package.dart';
 import '../confirm/booking_confirmation_screen.dart';
 
 class DetailScreen extends StatefulWidget {
-  const DetailScreen({Key? key}) : super(key: key);
+  final String id;
+  final String title;
+  const DetailScreen({Key? key, required this.id, required this.title})
+      : super(key: key);
 
   @override
   State<DetailScreen> createState() => _DetailScreenState();
 }
 
 class _DetailScreenState extends State<DetailScreen> {
+  late DetailBloc _detailBloc;
+  @override
+  void initState() {
+    _detailBloc = kiwi.KiwiContainer().resolve<DetailBloc>();
+    _detailBloc.add(LoadPackageDetail(widget.id));
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _detailBloc.close();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        foregroundColor: Colors.white,
-        title: const Text(
-          '3D2N at Langkawi Island',
-          maxLines: 2,
+    return BlocProvider(
+      create: (context) => _detailBloc,
+      child: Scaffold(
+        appBar: AppBar(
+          foregroundColor: Colors.white,
+          title: Text(
+            widget.title,
+            maxLines: 2,
+          ),
+          actions: const [
+            Padding(
+              padding: EdgeInsets.only(right: 8.0),
+              child: Icon(
+                Icons.favorite,
+                color: Colors.red,
+              ),
+            ),
+          ],
         ),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 8.0),
-            child: Icon(
-              Icons.favorite,
-              color: Colors.red,
+        bottomNavigationBar: SafeArea(
+            child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const BookingConfirmationScreen(),
+                ),
+              );
+            },
+            child: const Text(
+              'Start Booking',
+              style: TextStyle(color: Colors.white),
             ),
           ),
-        ],
-      ),
-      bottomNavigationBar: SafeArea(
-          child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const BookingConfirmationScreen(),
-              ),
+        )),
+        body: BlocBuilder<DetailBloc, DetailState>(builder: (context, state) {
+          if (state is DetailLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is DetailLoadSuccess) {
+            return ListView(
+              children: [
+                _buildPhotoSection(state.package.imgUrls),
+
+                ///Package title, travel company and review section
+                ListTile(
+                  subtitle: Text(state.package.provider),
+                  title: Text(
+                    widget.title,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 20.0),
+                  ),
+                  trailing: Container(
+                    padding: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                        color: Colors.orange,
+                        borderRadius: BorderRadius.circular(5.0)),
+                    child: Text(
+                      '${state.package.rating}',
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+
+                ///Details section
+                ListTile(
+                  subtitle: const Text('Price per person'),
+                  title: Text(
+                    'RM ${state.package.price}',
+                    style: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20.0),
+                  ),
+                ),
+                ListTile(
+                    leading: const Icon(Icons.place_outlined),
+                    title: Text(
+                      state.package.location,
+                      style: const TextStyle(fontSize: 13),
+                    )),
+                ListTile(
+                  leading: const Icon(Icons.description_outlined),
+                  title: Text(
+                    state.package.description,
+                    style: const TextStyle(fontSize: 13),
+                  ),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.restaurant),
+                  title: Text(
+                    state.package.mealInfo,
+                    style: const TextStyle(fontSize: 13),
+                  ),
+                ),
+
+                ///Description
+                const Divider(),
+                ExpansionTile(
+                  title: const Text(
+                    'Itinerary Details',
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+                  ),
+                  // subtitle: const Text('Eagle Feeding'),
+
+                  ///Remove border
+                  shape: Border.all(color: Colors.transparent),
+                  children: _buildItineraryDetails(state.package.itineraries),
+                ),
+                const Divider(),
+
+                ///Facilities
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    'Tags',
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+                  ),
+                ),
+                _buildTagsSection(state.package.tags),
+              ],
             );
-          },
-          child: const Text(
-            'Start Booking',
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
-      )),
-      body: ListView(
-        children: [
-          _buildPhotoSection(),
+          }
 
-          ///Package title, travel company and review section
-          ListTile(
-            subtitle: const Text('Flutter Travel & Tours'),
-            title: const Text(
-              '3D2N at Langkawi Island',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
-            ),
-            trailing: Container(
-              padding: const EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                  color: Colors.orange,
-                  borderRadius: BorderRadius.circular(5.0)),
-              child: const Text(
-                '7.4',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ),
-
-          ///Details section
-          const ListTile(
-            subtitle: Text('Price per person'),
-            title: Text(
-              'RM 300',
-              style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20.0),
-            ),
-          ),
-          const ListTile(
-            leading: Icon(Icons.place_outlined),
-            title: Text(
-                style: TextStyle(fontSize: 13),
-                'Lot 79, Jalan Kuala Melaka, Mukim Padang Matsirat, Pantai Cenan, 07100 Malaysia'),
-          ),
-          const ListTile(
-            leading: Icon(Icons.description_outlined),
-            title: Text(
-              """Discover Langkawi in a 3 day 2 nights vacation getaway.Trips include, eagle feeding, snorkeling, beach party and more. Bring you family and close ones for relaxed island tour.""",
-              style: TextStyle(fontSize: 13),
-            ),
-          ),
-          const ListTile(
-            leading: Icon(Icons.restaurant),
-            title: Text(
-              'Inclusive 3 breakfast meals',
-              style: TextStyle(fontSize: 13),
-            ),
-          ),
-
-          ///Description
-          const Divider(),
-          ExpansionTile(
-            title: const Text(
-              'Itinerary Details',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
-            ),
-            // subtitle: const Text('Eagle Feeding'),
-
-            ///Remove border
-            shape: Border.all(color: Colors.transparent),
-            children: const [
-              ListTile(
-                isThreeLine: true,
-                leading: Icon(
-                  Icons.place,
-                  color: Colors.orangeAccent,
-                ),
-                title: Text('Day 1 - Dayang Bunting Island'),
-                subtitle: Text(
-                    'Breakfast at hotel. Island hopping tour around Dayang Bunting Island'),
-              ),
-              ListTile(
-                isThreeLine: true,
-                leading: Icon(
-                  Icons.place,
-                  color: Colors.orangeAccent,
-                ),
-                title: Text('Day 2 - Dayang Bunting Island'),
-                subtitle: Text(
-                    'Breakfast at hotel. Island hopping tour around Dayang Bunting Island'),
-              ),
-            ],
-          ),
-          const Divider(),
-
-          ///Facilities
-          const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Text(
-              'Tags',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
-            ),
-          ),
-          _buildTagsSection(),
-        ],
+          ///Todo: Implement better error message.
+          else {
+            return const Text('Error');
+          }
+        }),
       ),
     );
   }
 
   ///Photo section
-  Widget _buildPhotoSection() {
+  Widget _buildPhotoSection(List<String> images) {
+    ///List to be passed to children parameter of PageView
+    List<Widget> networkImages = [];
+    for (var image in images) {
+      networkImages.add(
+        Image.network(
+          image,
+          fit: BoxFit.cover,
+        ),
+      );
+    }
+
     return SizedBox(
       height: 250,
       child: Stack(
         children: [
           PageView(
-            children: [
-              Image.network(
-                'https://cf.bstatic.com/xdata/images/hotel/max1280x900/288170556.jpg?k=aeeaa7d131685735ce229897f1f1f2f18667e7ef59c558a819d6a18d127979b5&o=&hp=1',
-                fit: BoxFit.cover,
-              ),
-              Image.network(
-                'https://cf.bstatic.com/xdata/images/hotel/max1024x768/294906194.jpg?k=999e84336dc751407e0246391844d4466f37173886f969afd63c747743505b17&o=&hp=1',
-                fit: BoxFit.cover,
-              ),
-              Image.network(
-                'https://cf.bstatic.com/xdata/images/hotel/max1280x900/375663715.jpg?k=8f6fc16107ce76685c8986208895e9a54ad4fe34277335983019dac5b759742b&o=&hp=1',
-                fit: BoxFit.cover,
-              )
-            ],
+            children: networkImages,
           ),
           Align(
             alignment: Alignment.centerLeft,
@@ -211,6 +226,81 @@ class _DetailScreenState extends State<DetailScreen> {
     );
   }
 
+  ///ListTiles for itinerary details section
+  List<Widget> _buildItineraryDetails(List<Itinerary> itineraries) {
+    List<Widget> itineraryList = [];
+
+    for (var itinerary in itineraries) {
+      itineraryList.add(
+        ListTile(
+          isThreeLine: true,
+          leading: const Icon(
+            Icons.place,
+            color: Colors.orangeAccent,
+          ),
+          title: Text(itinerary.title),
+          subtitle: Text(itinerary.description),
+        ),
+      );
+    }
+
+    return itineraryList;
+  }
+
+  ///Tags section
+  Widget _buildTagsSection(List<String> tags) {
+    List<Widget> chipTags = [];
+
+    for (var tag in tags) {
+      chipTags.add(
+        Chip(
+          backgroundColor: Colors.orangeAccent,
+          label: Text(
+            tag,
+            style: const TextStyle(color: Colors.white),
+          ),
+        ),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(left: 8.0),
+      child: Wrap(spacing: 5.0, children: chipTags
+          // children: const [
+          //   Chip(
+          //     backgroundColor: Colors.orangeAccent,
+          //     label: Text(
+          //       'Island Hopping',
+          //       style: TextStyle(color: Colors.white),
+          //     ),
+          //   ),
+          //   Chip(
+          //     backgroundColor: Colors.orangeAccent,
+          //     label: Text(
+          //       'Eagle Feeding',
+          //       style: TextStyle(color: Colors.white),
+          //     ),
+          //   ),
+          //   Chip(
+          //     backgroundColor: Colors.orangeAccent,
+          //     label: Text(
+          //       'Island Tour',
+          //       style: TextStyle(color: Colors.white),
+          //     ),
+          //   ),
+          //   Chip(
+          //     backgroundColor: Colors.orangeAccent,
+          //     label: Text(
+          //       'Pristine Beach',
+          //       style: TextStyle(color: Colors.white),
+          //     ),
+          //   ),
+          // ],
+          ),
+    );
+  }
+
+  ///Todo: Remove this.
   // Widget _buildBookingInfo() {
   //   return Column(
   //     crossAxisAlignment: CrossAxisAlignment.start,
@@ -278,44 +368,4 @@ class _DetailScreenState extends State<DetailScreen> {
   //     ],
   //   );
   // }
-
-  ///Tags section
-  Widget _buildTagsSection() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 8.0),
-      child: Wrap(
-        spacing: 5.0,
-        children: const [
-          Chip(
-            backgroundColor: Colors.orangeAccent,
-            label: Text(
-              'Island Hopping',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-          Chip(
-            backgroundColor: Colors.orangeAccent,
-            label: Text(
-              'Eagle Feeding',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-          Chip(
-            backgroundColor: Colors.orangeAccent,
-            label: Text(
-              'Island Tour',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-          Chip(
-            backgroundColor: Colors.orangeAccent,
-            label: Text(
-              'Pristine Beach',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }

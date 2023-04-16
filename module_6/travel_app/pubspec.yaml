@@ -40,6 +40,10 @@ dependencies:
   cloud_firestore: ^4.5.0
   firebase_storage: ^11.1.0
   firebase_ui_auth: ^1.2.0
+  flutter_bloc: ^8.1.2
+  equatable: ^2.0.5
+  kiwi: ^4.1.0
+  syncfusion_flutter_datepicker: ^20.3.61
 
 dev_dependencies:
   flutter_test:
