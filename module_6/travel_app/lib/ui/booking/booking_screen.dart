@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travel_app/ui/booking/booking_bloc.dart';
 import 'package:travel_app/ui/booking/widgets/booking_card.dart';
 import 'package:kiwi/kiwi.dart' as kiwi;
+import '../../data/model/booking_detail.dart';
 import '../cancel/cancel_booking_screen.dart';
 
 class BookingScreen extends StatefulWidget {
@@ -77,50 +78,55 @@ class _BookingScreenState extends State<BookingScreen>
                 return Expanded(
                   child: TabBarView(controller: _tabController, children: [
                     ListView(
-                      children: [
-                        BookingCard(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const CancelBookingScreen()));
-                          },
-                        ),
-                        BookingCard(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const CancelBookingScreen()));
-                          },
-                        ),
-                        BookingCard(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const CancelBookingScreen()));
-                          },
-                        ),
-                      ],
+                      children: _getActiveBookings(state.bookings),
                     ),
-                    ListView(
-                      children: [
-                        BookingCard(),
-                        BookingCard(),
-                        BookingCard(),
-                      ],
-                    ),
-                    ListView(
-                      children: [
-                        BookingCard(),
-                        BookingCard(),
-                        BookingCard(),
-                      ],
-                    ),
+                    Text('past'),
+                    Text('cancelled'),
+                    // ListView(
+                    //   children: [
+                    //     BookingCard(
+                    //       onTap: () {
+                    //         Navigator.push(
+                    //             context,
+                    //             MaterialPageRoute(
+                    //                 builder: (context) =>
+                    //                     const CancelBookingScreen()));
+                    //       },
+                    //     ),
+                    //     BookingCard(
+                    //       onTap: () {
+                    //         Navigator.push(
+                    //             context,
+                    //             MaterialPageRoute(
+                    //                 builder: (context) =>
+                    //                     const CancelBookingScreen()));
+                    //       },
+                    //     ),
+                    //     BookingCard(
+                    //       onTap: () {
+                    //         Navigator.push(
+                    //             context,
+                    //             MaterialPageRoute(
+                    //                 builder: (context) =>
+                    //                     const CancelBookingScreen()));
+                    //       },
+                    //     ),
+                    //   ],
+                    // ),
+                    // ListView(
+                    //   children: [
+                    //     BookingCard(),
+                    //     BookingCard(),
+                    //     BookingCard(),
+                    //   ],
+                    // ),
+                    // ListView(
+                    //   children: [
+                    //     BookingCard(),
+                    //     BookingCard(),
+                    //     BookingCard(),
+                    //   ],
+                    // ),
                   ]),
                 );
               } else {
@@ -132,5 +138,39 @@ class _BookingScreenState extends State<BookingScreen>
         ),
       ),
     );
+  }
+
+  List<Widget> _getActiveBookings(List<BookingDetail> bookings) {
+    List<Widget> b = [];
+
+    for (BookingDetail booking in bookings) {
+      ///Standardize date for comparison
+      DateTime bookingEndDate = DateTime(
+          booking.endDate.year, booking.endDate.month, booking.endDate.day);
+      DateTime now = DateTime.now();
+      DateTime currentDate = DateTime(now.year, now.month, now.day);
+
+      ///Add to list if booking is ACTIVE and end date is later than current date
+      if (booking.status == BookingStatus.active &&
+          bookingEndDate.isAfter(now)) {
+        b.add(
+          BookingCard(
+            totalPrice: booking.totalPrice.toString(),
+            imageUrl: booking.imageUrl!,
+            numPax: booking.numPax.toString(),
+            packageTitle: booking.packageId,
+            date:
+                '${booking.startDate.day}/${booking.startDate.month} - ${booking.endDate.day}/${booking.endDate.month}',
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const CancelBookingScreen()));
+            },
+          ),
+        );
+      }
+    }
+    return b;
   }
 }

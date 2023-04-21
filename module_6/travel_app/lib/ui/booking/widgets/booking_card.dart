@@ -2,10 +2,23 @@ import 'package:flutter/material.dart';
 
 class BookingCard extends StatelessWidget {
   final VoidCallback? onTap;
-  const BookingCard({Key? key, this.onTap}) : super(key: key);
+  final String imageUrl;
+  final String packageTitle;
+  final String date;
+  final String totalPrice;
+  final String numPax;
+  const BookingCard(
+      {Key? key,
+      this.onTap,
+      required this.totalPrice,
+      required this.numPax,
+      required this.packageTitle,
+      required this.imageUrl,
+      required this.date})
+      : super(key: key);
 
-  final imgUrl =
-      'https://upload.wikimedia.org/wikipedia/commons/4/4b/La_Tour_Eiffel_vue_de_la_Tour_Saint-Jacques%2C_Paris_ao%C3%BBt_2014_%282%29.jpg';
+  // final imgUrl =
+  //     'https://upload.wikimedia.org/wikipedia/commons/4/4b/La_Tour_Eiffel_vue_de_la_Tour_Saint-Jacques%2C_Paris_ao%C3%BBt_2014_%282%29.jpg';
 
   @override
   Widget build(BuildContext context) {
@@ -23,22 +36,22 @@ class BookingCard extends StatelessWidget {
                 borderRadius: BorderRadius.all(Radius.circular(15)),
               ),
               child: Image.network(
-                imgUrl,
+                imageUrl,
                 fit: BoxFit.cover,
               ),
             ),
             isThreeLine: true,
-            title: const Text('3D2N Langkawi Tour'),
+            title: Text(packageTitle),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text('12 Mar - 14 Mar 2023'),
-                Text('3 adults'),
+              children: [
+                Text(date),
+                Text('$numPax adults'),
               ],
             ),
-            trailing: const Text(
-              'RM3,000',
-              style: TextStyle(
+            trailing: Text(
+              'RM $totalPrice',
+              style: const TextStyle(
                 color: Colors.orangeAccent,
                 fontWeight: FontWeight.bold,
               ),

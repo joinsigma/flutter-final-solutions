@@ -46,6 +46,7 @@ void initKiwi() {
   container.registerFactory(
     (c) => BookingConfirmBloc(
       c.resolve<BookingRepository>(),
+      c.resolve<TravelPackageRepository>(),
     ),
   );
 

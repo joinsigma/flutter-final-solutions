@@ -8,6 +8,8 @@ class TravelPackageRepository {
 
   TravelPackageRepository(this._travelPackageService);
 
+  
+
   Future<List<Package>> fetchPackages() async {
     final result = await _travelPackageService.getPackages();
     return result;

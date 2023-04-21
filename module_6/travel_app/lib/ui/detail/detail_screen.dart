@@ -4,7 +4,7 @@ import 'package:kiwi/kiwi.dart' as kiwi;
 import 'package:travel_app/ui/detail/detail_bloc.dart';
 
 import '../../data/model/detail_package.dart';
-import '../confirm/booking_confirmation_screen.dart';
+import '../confirm/booking_form_screen.dart';
 
 class DetailScreen extends StatefulWidget {
   final String id;
@@ -62,7 +62,7 @@ class _DetailScreenState extends State<DetailScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => BookingConfirmationScreen(
+                  builder: (context) => BookingFormScreen(
                     packageId: widget.id,
                     pricePerPax: widget.price,
                   ),

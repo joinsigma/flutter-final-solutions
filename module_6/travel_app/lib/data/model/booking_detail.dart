@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 
 enum BookingStatus { active, past, cancelled }
 
-class Booking {
+class BookingDetail {
   final String id;
   final String userId;
   final String email;
@@ -17,11 +17,11 @@ class Booking {
   final BookingStatus? status;
   final String? imageUrl;
   final int totalPrice;
+  final DateTime createdAt;
 
-  Booking(
+  BookingDetail(
       {required this.packageId,
       required this.id,
-      required this.totalPrice,
       required this.userId,
       required this.email,
       required this.custFirstName,
@@ -31,6 +31,8 @@ class Booking {
       required this.numPax,
       required this.startDate,
       required this.endDate,
+      required this.createdAt,
+      required this.totalPrice,
       this.imageUrl,
       this.status});
 }

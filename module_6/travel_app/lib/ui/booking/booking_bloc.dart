@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../data/model/booking.dart';
+import '../../data/model/booking_detail.dart';
 import '../../data/model/package.dart';
 import '../../data/repository/booking_repository.dart';
 import '../../data/repository/travel_package_repository.dart';
@@ -25,7 +25,7 @@ abstract class BookingState extends Equatable {
 class BookingLoading extends BookingState {}
 
 class BookingLoadSuccess extends BookingState {
-  final List<Booking> bookings;
+  final List<BookingDetail> bookings;
   const BookingLoadSuccess(this.bookings);
   @override
   List<Object?> get props => [bookings];

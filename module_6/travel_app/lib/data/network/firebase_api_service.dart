@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:travel_app/data/model/booking.dart';
 
+import '../model/booking_detail.dart';
 import '../model/detail_package.dart';
 import '../model/package.dart';
 
@@ -105,16 +105,15 @@ class FirebaseApiService {
   }
 
   ///Get a travel package in detail
-  Future<List<Booking>> getBookings(String userId) async {
+  Future<List<BookingDetail>> getBookings(String userId) async {
     CollectionReference packages =
         FirebaseFirestore.instance.collection('bookings');
-    // final result = await packages.doc(id).get();
-    final result = await packages.get();
+    final result = await packages.where('userId', isEqualTo: userId).get();
 
-    List<Booking> bookings = [];
+    List<BookingDetail> bookings = [];
 
     for (var doc in result.docs) {
-      final booking = Booking(
+      final booking = BookingDetail(
           id: doc.id,
           packageId: doc['packageId'],
           userId: doc['userId'],
@@ -124,10 +123,12 @@ class FirebaseApiService {
           mobileNo: doc['mobile_no'],
           billingAddress: doc['billing_address'],
           numPax: doc['num_pax'],
-          startDate: DateTime.parse(doc['start_date']),
-          endDate: DateTime.parse(doc['end_date']),
+          createdAt: doc['created_at'].toDate(),
+          startDate: doc['start_date'].toDate(),
+          endDate: doc['end_date'].toDate(),
+          imageUrl: doc['image_url'],
           totalPrice: doc['total_price'],
-          status: doc['state'] == 'ACTIVE'
+          status: doc['status'] == 'ACTIVE'
               ? BookingStatus.active
               : BookingStatus.cancelled);
       bookings.add(booking);
@@ -136,7 +137,8 @@ class FirebaseApiService {
   }
 
   ///Create a new booking for user
-  Future<void> createNewBooking(Booking booking) async {
+  Future<void> createNewBooking(
+      {required BookingDetail booking, required int totalPrice}) async {
     CollectionReference packages =
         FirebaseFirestore.instance.collection('bookings');
     await packages.add({
@@ -150,7 +152,9 @@ class FirebaseApiService {
       'num_pax': booking.numPax,
       'start_date': booking.startDate,
       'end_date': booking.endDate,
-      'total_price': booking.totalPrice,
+      'created_at': booking.createdAt,
+      'total_price': totalPrice,
+      'image_url': booking.imageUrl,
       'status': 'ACTIVE'
     });
   }
