@@ -65,6 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 builder: (context) => DetailScreen(
                                   id: package.id,
                                   title: package.title,
+                                  price: package.price,
                                 ),
                               ),
                             );
@@ -81,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               } else {
                 ///Todo: Implement better error msg
-                return Text('Error');
+                return const Text('Error');
               }
             })
           ],

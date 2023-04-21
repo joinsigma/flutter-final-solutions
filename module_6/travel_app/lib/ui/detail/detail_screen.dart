@@ -9,7 +9,9 @@ import '../confirm/booking_confirmation_screen.dart';
 class DetailScreen extends StatefulWidget {
   final String id;
   final String title;
-  const DetailScreen({Key? key, required this.id, required this.title})
+  final int price;
+  const DetailScreen(
+      {Key? key, required this.id, required this.title, required this.price})
       : super(key: key);
 
   @override
@@ -60,7 +62,10 @@ class _DetailScreenState extends State<DetailScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const BookingConfirmationScreen(),
+                  builder: (context) => BookingConfirmationScreen(
+                    packageId: widget.id,
+                    pricePerPax: widget.price,
+                  ),
                 ),
               );
             },

@@ -12,7 +12,6 @@ class TravelPackageService {
     List<Package> pkgs = [];
 
     for (var doc in result.docs) {
-      // print(doc['description']);
       final package = Package(
           id: doc.id,
           title: doc['title'],
@@ -23,16 +22,6 @@ class TravelPackageService {
       pkgs.add(package);
     }
     return pkgs;
-    // FirebaseFirestore.instance
-    //     .collection('packages')
-    //     .get()
-    //     .then((QuerySnapshot querySnapshot) {
-    //       // print(querySnapshot.docs['tags']);
-    //   querySnapshot.docs.forEach((doc) {
-    //     print(doc['title']);
-    //     print(doc['tags']);
-    //   });
-    // });
   }
 
   Future<DetailPackage> getDetailPackage(String id) async {
@@ -55,30 +44,8 @@ class TravelPackageService {
                 title: json['title'], description: json['description']))
             .toList(),
         tags: List<String>.from(result['tags']));
-    print(detailPackage.id);
-    print(detailPackage.title);
     return detailPackage;
-    // for (var doc in result.docs) {
-    //   // print(doc['description']);
-    //   final package = Package(
-    //       id: doc.id,
-    //       title: doc['title'],
-    //       location: doc['location'],
-    //       imgUrl: doc['main_img_url'],
-    //       price: doc['price_per_pax'],
-    //       tags: List<String>.from(doc['tags']));
-    //   pkgs.add(package);
-    // }
-    // return pkgs;
-    // FirebaseFirestore.instance
-    //     .collection('packages')
-    //     .get()
-    //     .then((QuerySnapshot querySnapshot) {
-    //       // print(querySnapshot.docs['tags']);
-    //   querySnapshot.docs.forEach((doc) {
-    //     print(doc['title']);
-    //     print(doc['tags']);
-    //   });
-    // });
   }
+
+
 }

@@ -32,8 +32,8 @@ class BookingCard extends StatelessWidget {
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
-                Text('12th Mar 2023'),
-                Text('ID: 122203334'),
+                Text('12 Mar - 14 Mar 2023'),
+                Text('3 adults'),
               ],
             ),
             trailing: const Text(
