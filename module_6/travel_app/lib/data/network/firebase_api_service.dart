@@ -94,7 +94,7 @@ class FirebaseApiService {
         location: result['location'],
         imgUrls: List<String>.from(result['extra_img_url']),
         price: result['price_per_pax'],
-        partnerName: result['provider'],
+        partnerName: result['partner_name'],
         rating: result['rating'],
         itineraries: result['itinerary']
             .map<Itinerary>((json) => Itinerary(
@@ -173,5 +173,36 @@ class FirebaseApiService {
     CollectionReference bookings =
         FirebaseFirestore.instance.collection('bookings');
     await bookings.doc(bookingId).update({'status': 'CANCELLED'});
+  }
+
+  Future<bool> isPackageLikedByUser(String userId, String packageId) async {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    final user = await users.doc(userId).get();
+    // final likes = user['likes'] == null ? [] :List<String>.from(user['likes']);
+    final likes = List<String>.from(user['likes']);
+    return likes.contains(packageId) ? true : false;
+  }
+
+  Future<void> addPackageToUserLikes({
+    required String userId,
+    required String packageId,
+  }) async {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+    ///If your document contains an array field, you can use arrayUnion() and arrayRemove() to add and remove elements. arrayUnion() adds elements to an array but only elements not already present. arrayRemove() removes all instances of each given element.
+    await users.doc(userId).update({
+      'likes': FieldValue.arrayUnion([packageId])
+    });
+  }
+
+  Future<void> removePackageFromUserLikes({
+    required String userId,
+    required String packageId,
+  }) async {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+    await users.doc(userId).update({
+      'likes': FieldValue.arrayRemove([packageId])
+    });
   }
 }

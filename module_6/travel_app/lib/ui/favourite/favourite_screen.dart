@@ -18,7 +18,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
           const Padding(
             padding: EdgeInsets.only(left: 8.0, top: 20, bottom: 8.0),
             child: Text(
-              'Favourites',
+              'Your Likes',
               style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
             ),
           ),

@@ -80,7 +80,7 @@ class _MainScreenState extends State<MainScreen> {
       ),
     ),
     const BottomNavigationBarItem(
-      label: "Saved",
+      label: "Likes",
       icon: Icon(
         Icons.favorite,
         color: Colors.grey,

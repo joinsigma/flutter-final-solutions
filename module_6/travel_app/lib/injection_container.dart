@@ -1,9 +1,9 @@
 import 'package:kiwi/kiwi.dart' as kiwi;
 import 'package:travel_app/data/network/auth_service.dart';
 import 'package:travel_app/data/network/firebase_api_service.dart';
-import 'package:travel_app/data/network/travel_package_service.dart';
 import 'package:travel_app/data/repository/booking_repository.dart';
 import 'package:travel_app/data/repository/travel_package_repository.dart';
+import 'package:travel_app/data/repository/user_repository.dart';
 import 'package:travel_app/ui/booking/booking_bloc.dart';
 import 'package:travel_app/ui/cancel/cancel_booking_bloc.dart';
 import 'package:travel_app/ui/confirm/booking_confirm_bloc.dart';
@@ -15,18 +15,22 @@ void initKiwi() {
 
   ///Service
   container.registerSingleton((c) => AuthService());
-  container.registerSingleton((c) => TravelPackageService());
   container.registerSingleton((c) => FirebaseApiService());
 
   ///Repository
   container.registerSingleton(
     (c) => TravelPackageRepository(
-      c.resolve<TravelPackageService>(),
+      c.resolve<FirebaseApiService>(),
     ),
   );
 
   container.registerSingleton(
     (c) => BookingRepository(
+      c.resolve<FirebaseApiService>(),
+    ),
+  );
+  container.registerSingleton(
+    (c) => UserRepository(
       c.resolve<FirebaseApiService>(),
     ),
   );

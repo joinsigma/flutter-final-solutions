@@ -47,14 +47,54 @@ class _DetailScreenState extends State<DetailScreen> {
             widget.title,
             maxLines: 2,
           ),
-          actions: const [
-            Padding(
-              padding: EdgeInsets.only(right: 8.0),
-              child: Icon(
-                Icons.favorite,
-                color: Colors.red,
-              ),
-            ),
+          actions: [
+            BlocBuilder<DetailBloc, DetailState>(builder: (context, state) {
+              if (state is DetailLoadSuccess) {
+                return state.isLiked
+                    ? Padding(
+                        padding: const EdgeInsets.only(right: 8.0, bottom: 8.0),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.grey[100],
+                              shape: const CircleBorder()),
+                          onPressed: () {
+                            _detailBloc.add(
+                                TogglePackageLike(isLiked: false,
+                                    packageId: widget.id));
+                          },
+                          child: const Icon(
+                            Icons.favorite,
+                            color: Colors.red,
+                          ),
+                        ),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.only(right: 8.0, bottom: 8.0),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.grey[100],
+                              shape: const CircleBorder()),
+                          onPressed: () {
+                            _detailBloc.add(
+                                TogglePackageLike(isLiked: true,
+                                    packageId: widget.id));
+                          },
+                          child: const Icon(
+                            Icons.favorite_outline,
+                            color: Colors.red,
+                          ),
+                        ),
+                      );
+              }
+              return Container();
+            }),
+            // Padding(
+            //   padding: EdgeInsets.only(right: 8.0),
+            //   child: Icon(
+            //     Icons.favorite,
+            //     color: Colors.red,
+            //   ),
+            // ),
           ],
         ),
         bottomNavigationBar:
