@@ -9,12 +9,15 @@ class BookingRepository {
 
   Future<void> confirmBooking(BookingDetail booking, int totalPrice) async {
     await _firebaseApiService.createNewBooking(
-        booking: booking,
-        totalPrice: totalPrice);
+        booking: booking, totalPrice: totalPrice);
   }
 
   Future<List<BookingDetail>> fetchBookings() async {
     final result = await _firebaseApiService.getBookings('1');
     return result;
+  }
+
+  Future<void> cancelBooking(String bookingId) async {
+    await _firebaseApiService.cancelBooking(bookingId);
   }
 }

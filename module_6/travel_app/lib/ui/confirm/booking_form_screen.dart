@@ -9,8 +9,14 @@ import 'booking_summary_screen.dart';
 class BookingFormScreen extends StatefulWidget {
   final String packageId;
   final int pricePerPax;
+  final String packageTitle;
+  final String partnerName;
   const BookingFormScreen(
-      {Key? key, required this.packageId, required this.pricePerPax})
+      {Key? key,
+      required this.packageId,
+      required this.packageTitle,
+      required this.partnerName,
+      required this.pricePerPax})
       : super(key: key);
 
   @override
@@ -153,7 +159,7 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16)),
                     context: context,
-                    builder: (context) => _datepicker(context),
+                    builder: (context) => _datePicker(context),
                   );
                 },
                 controller: _dateCtrl,
@@ -177,7 +183,9 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
                       final bookingDetail = BookingDetail(
                           id: '1',
                           userId: '1',
+                          partnerName: widget.partnerName,
                           packageId: widget.packageId,
+                          packageTitle: widget.packageTitle,
                           custFirstName: _fNameCtrl.text,
                           custLastName: _lNameCtrl.text,
                           email: _emailCtrl.text,
@@ -211,10 +219,10 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
     );
   }
 
-  Widget _datepicker(BuildContext context) {
+  Widget _datePicker(BuildContext context) {
     return SafeArea(
       child: SfDateRangePicker(
-        enablePastDates: false,
+        enablePastDates: true,
         controller: DateRangePickerController(),
         showActionButtons: true,
         onSubmit: (value) {

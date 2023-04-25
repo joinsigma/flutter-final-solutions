@@ -5,6 +5,7 @@ import 'package:travel_app/ui/booking/widgets/booking_card.dart';
 import 'package:kiwi/kiwi.dart' as kiwi;
 import '../../data/model/booking_detail.dart';
 import '../cancel/cancel_booking_screen.dart';
+import 'package:intl/intl.dart';
 
 class BookingScreen extends StatefulWidget {
   const BookingScreen({Key? key}) : super(key: key);
@@ -15,6 +16,8 @@ class BookingScreen extends StatefulWidget {
 
 class _BookingScreenState extends State<BookingScreen>
     with SingleTickerProviderStateMixin {
+  final DateFormat _sDateFormat = DateFormat('dd MMM');
+  final DateFormat _eDateFormat = DateFormat('dd MMM yyyy');
   late BookingBloc _bookingBloc;
   late TabController _tabController;
   @override
@@ -47,11 +50,6 @@ class _BookingScreenState extends State<BookingScreen>
               ),
             ),
             TabBar(controller: _tabController, tabs: const [
-              // Tab(
-              //   icon: Chip(
-              //     label: Text('Active'),
-              //   ),
-              // ),
               Tab(
                 icon: Text(
                   'Active',
@@ -75,58 +73,37 @@ class _BookingScreenState extends State<BookingScreen>
               if (state is BookingLoading) {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is BookingLoadSuccess) {
+                final activeBookings = _getActiveBookings(state.bookings);
+                final pastBookings = _getPastBookings(state.bookings);
+                final cancelledBookings = _getCancelledBookings(state.bookings);
                 return Expanded(
                   child: TabBarView(controller: _tabController, children: [
-                    ListView(
-                      children: _getActiveBookings(state.bookings),
-                    ),
-                    Text('past'),
-                    Text('cancelled'),
-                    // ListView(
-                    //   children: [
-                    //     BookingCard(
-                    //       onTap: () {
-                    //         Navigator.push(
-                    //             context,
-                    //             MaterialPageRoute(
-                    //                 builder: (context) =>
-                    //                     const CancelBookingScreen()));
-                    //       },
-                    //     ),
-                    //     BookingCard(
-                    //       onTap: () {
-                    //         Navigator.push(
-                    //             context,
-                    //             MaterialPageRoute(
-                    //                 builder: (context) =>
-                    //                     const CancelBookingScreen()));
-                    //       },
-                    //     ),
-                    //     BookingCard(
-                    //       onTap: () {
-                    //         Navigator.push(
-                    //             context,
-                    //             MaterialPageRoute(
-                    //                 builder: (context) =>
-                    //                     const CancelBookingScreen()));
-                    //       },
-                    //     ),
-                    //   ],
-                    // ),
-                    // ListView(
-                    //   children: [
-                    //     BookingCard(),
-                    //     BookingCard(),
-                    //     BookingCard(),
-                    //   ],
-                    // ),
-                    // ListView(
-                    //   children: [
-                    //     BookingCard(),
-                    //     BookingCard(),
-                    //     BookingCard(),
-                    //   ],
-                    // ),
+                    ///Active
+                    activeBookings.isEmpty
+                        ? const Center(
+                            child: Text('No active booking at the moment'),
+                          )
+                        : ListView(
+                            children: activeBookings,
+                          ),
+
+                    ///Past
+                    pastBookings.isEmpty
+                        ? const Center(
+                            child: Text('No past booking at the moment'),
+                          )
+                        : ListView(
+                            children: pastBookings,
+                          ),
+
+                    ///Cancelled
+                    cancelledBookings.isEmpty
+                        ? const Center(
+                            child: Text('No cancelled booking at the moment'),
+                          )
+                        : ListView(
+                            children: cancelledBookings,
+                          ),
                   ]),
                 );
               } else {
@@ -140,8 +117,9 @@ class _BookingScreenState extends State<BookingScreen>
     );
   }
 
+  ///Helper
   List<Widget> _getActiveBookings(List<BookingDetail> bookings) {
-    List<Widget> b = [];
+    List<Widget> activeBookings = [];
 
     for (BookingDetail booking in bookings) {
       ///Standardize date for comparison
@@ -152,25 +130,80 @@ class _BookingScreenState extends State<BookingScreen>
 
       ///Add to list if booking is ACTIVE and end date is later than current date
       if (booking.status == BookingStatus.active &&
-          bookingEndDate.isAfter(now)) {
-        b.add(
+          bookingEndDate.isAfter(currentDate)) {
+        activeBookings.add(
           BookingCard(
             totalPrice: booking.totalPrice.toString(),
             imageUrl: booking.imageUrl!,
             numPax: booking.numPax.toString(),
-            packageTitle: booking.packageId,
+            packageTitle: booking.packageTitle,
             date:
-                '${booking.startDate.day}/${booking.startDate.month} - ${booking.endDate.day}/${booking.endDate.month}',
+                '${_sDateFormat.format(booking.startDate)} - ${_eDateFormat.format(booking.endDate)}',
+            // date:
+            //     '${booking.startDate.day}/${booking.startDate.month} - ${booking.endDate.day}/${booking.endDate.month}',
             onTap: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const CancelBookingScreen()));
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CancelBookingScreen(
+                    bookingDetail: booking,
+                  ),
+                ),
+              );
             },
           ),
         );
       }
     }
-    return b;
+    return activeBookings;
+  }
+
+  List<Widget> _getPastBookings(List<BookingDetail> bookings) {
+    List<Widget> pastBookings = [];
+
+    for (BookingDetail booking in bookings) {
+      ///Standardize date for comparison
+      DateTime bookingEndDate = DateTime(
+          booking.endDate.year, booking.endDate.month, booking.endDate.day);
+      DateTime now = DateTime.now();
+      DateTime currentDate = DateTime(now.year, now.month, now.day);
+
+      ///Add to list if booking is COMPLETED and current date is later than booking end date.
+      if (booking.status == BookingStatus.active &&
+          currentDate.isAfter(bookingEndDate)) {
+        pastBookings.add(
+          BookingCard(
+            totalPrice: booking.totalPrice.toString(),
+            imageUrl: booking.imageUrl!,
+            numPax: booking.numPax.toString(),
+            packageTitle: booking.packageTitle,
+            date:
+                '${_sDateFormat.format(booking.startDate)} - ${_eDateFormat.format(booking.endDate)}',
+          ),
+        );
+      }
+    }
+    return pastBookings;
+  }
+
+  List<Widget> _getCancelledBookings(List<BookingDetail> bookings) {
+    List<Widget> cancelledBookings = [];
+
+    for (BookingDetail booking in bookings) {
+      ///Add to list if booking is CANCELLED and current date is later than booking end date.
+      if (booking.status == BookingStatus.cancelled) {
+        cancelledBookings.add(
+          BookingCard(
+            totalPrice: booking.totalPrice.toString(),
+            imageUrl: booking.imageUrl!,
+            numPax: booking.numPax.toString(),
+            packageTitle: booking.packageTitle,
+            date:
+                '${_sDateFormat.format(booking.startDate)} - ${_eDateFormat.format(booking.endDate)}',
+          ),
+        );
+      }
+    }
+    return cancelledBookings;
   }
 }

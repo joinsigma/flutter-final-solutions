@@ -9,10 +9,13 @@ import '../confirm/booking_form_screen.dart';
 class DetailScreen extends StatefulWidget {
   final String id;
   final String title;
-  final int price;
-  const DetailScreen(
-      {Key? key, required this.id, required this.title, required this.price})
-      : super(key: key);
+  // final int price;
+  const DetailScreen({
+    Key? key,
+    required this.id,
+    required this.title,
+    // required this.price
+  }) : super(key: key);
 
   @override
   State<DetailScreen> createState() => _DetailScreenState();
@@ -54,27 +57,35 @@ class _DetailScreenState extends State<DetailScreen> {
             ),
           ],
         ),
-        bottomNavigationBar: SafeArea(
-            child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => BookingFormScreen(
-                    packageId: widget.id,
-                    pricePerPax: widget.price,
-                  ),
+        bottomNavigationBar:
+            BlocBuilder<DetailBloc, DetailState>(builder: (context, state) {
+          if (state is DetailLoadSuccess) {
+            return SafeArea(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BookingFormScreen(
+                        packageId: state.package.id,
+                        pricePerPax: state.package.price,
+                        packageTitle: state.package.title,
+                        partnerName: state.package.partnerName,
+                      ),
+                    ),
+                  );
+                },
+                child: const Text(
+                  'Start Booking',
+                  style: TextStyle(color: Colors.white),
                 ),
-              );
-            },
-            child: const Text(
-              'Start Booking',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        )),
+              ),
+            ));
+          }
+          return Container();
+        }),
         body: BlocBuilder<DetailBloc, DetailState>(builder: (context, state) {
           if (state is DetailLoading) {
             return const Center(child: CircularProgressIndicator());
@@ -85,9 +96,9 @@ class _DetailScreenState extends State<DetailScreen> {
 
                 ///Package title, travel company and review section
                 ListTile(
-                  subtitle: Text(state.package.provider),
+                  subtitle: Text(state.package.partnerName),
                   title: Text(
-                    widget.title,
+                    state.package.title,
                     style: const TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 20.0),
                   ),

@@ -12,13 +12,13 @@ class CancelSuccessScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.airplane_ticket,
               color: Colors.orange,
               size: 30.0,
             ),
-            Text(
-              'Cancel Succesful',
+            const Text(
+              'Cancel Successful',
               style: TextStyle(
                   color: Colors.orange,
                   fontWeight: FontWeight.bold,

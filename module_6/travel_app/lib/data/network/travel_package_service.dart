@@ -37,7 +37,7 @@ class TravelPackageService {
         location: result['location'],
         imgUrls: List<String>.from(result['extra_img_url']),
         price: result['price_per_pax'],
-        provider: result['provider'],
+        partnerName: result['partner_name'],
         rating: result['rating'],
         itineraries: result['itinerary']
             .map<Itinerary>((json) => Itinerary(
@@ -46,6 +46,4 @@ class TravelPackageService {
         tags: List<String>.from(result['tags']));
     return detailPackage;
   }
-
-
 }

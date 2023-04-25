@@ -65,16 +65,18 @@ class TravelPackageCard extends StatelessWidget {
                         )
                       ],
                     ),
-                    const Spacer(),
-                   isFavourite ? const Icon(
-                      Icons.favorite,
-                      color: Colors.redAccent,
-                      size: 30.0,
-                    ): const Icon(
-                     Icons.favorite_outline,
-                     color: Colors.redAccent,
-                     size: 30.0,
-                   )
+
+                    ///Favourite icon.
+                    //  const Spacer(),
+                    // isFavourite ? const Icon(
+                    //    Icons.favorite,
+                    //    color: Colors.redAccent,
+                    //    size: 30.0,
+                    //  ): const Icon(
+                    //   Icons.favorite_outline,
+                    //   color: Colors.redAccent,
+                    //   size: 30.0,
+                    // )
                   ],
                 ),
                 Wrap(

@@ -1,7 +1,7 @@
 class DetailPackage {
   final String id;
   final String title;
-  final String provider;
+  final String partnerName;
   final List<String> imgUrls;
   final List<String> tags;
   final List<Itinerary> itineraries;
@@ -22,7 +22,7 @@ class DetailPackage {
       required this.tags,
       required this.rating,
       required this.imgUrls,
-      required this.provider});
+      required this.partnerName});
 }
 
 class Itinerary {

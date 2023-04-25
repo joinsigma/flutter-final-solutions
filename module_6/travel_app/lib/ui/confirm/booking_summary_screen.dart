@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 import '../../data/model/booking_detail.dart';
 import 'booking_confirm_bloc.dart';
@@ -17,6 +18,7 @@ class BookingSummaryScreen extends StatefulWidget {
 }
 
 class _BookingSummaryScreenState extends State<BookingSummaryScreen> {
+  final DateFormat _dateFormat = DateFormat('EEE, dd MMMM yyyy');
   late BookingConfirmBloc _bookingConfirmBloc;
 
   @override
@@ -135,7 +137,7 @@ class _BookingSummaryScreenState extends State<BookingSummaryScreen> {
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 15.0),
                       ),
-                      Text('${widget.booking.startDate}')
+                      Text(_dateFormat.format(widget.booking.startDate))
                     ],
                   ),
                 ),
@@ -150,7 +152,7 @@ class _BookingSummaryScreenState extends State<BookingSummaryScreen> {
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 15.0),
                       ),
-                      Text('${widget.booking.endDate}')
+                      Text(_dateFormat.format(widget.booking.endDate))
                     ],
                   ),
                 ),
@@ -197,12 +199,14 @@ class _BookingSummaryScreenState extends State<BookingSummaryScreen> {
                   child: ElevatedButton(
                       onPressed: () {
                         _bookingConfirmBloc.add(TriggerBooking(
+                            partnerName: widget.booking.partnerName,
+                            packageTitle: widget.booking.packageTitle,
                             packageId: widget.booking.packageId,
                             fName: widget.booking.custFirstName,
                             lName: widget.booking.custLastName,
                             email: widget.booking.email,
                             mobileNo: widget.booking.mobileNo,
-                            imageUrl : state.imageUrl,
+                            imageUrl: state.imageUrl,
                             billingAddress: widget.booking.billingAddress,
                             numPax: widget.booking.numPax,
                             startDate: widget.booking.startDate,

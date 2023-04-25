@@ -94,7 +94,7 @@ class FirebaseApiService {
         location: result['location'],
         imgUrls: List<String>.from(result['extra_img_url']),
         price: result['price_per_pax'],
-        provider: result['provider'],
+        partnerName: result['provider'],
         rating: result['rating'],
         itineraries: result['itinerary']
             .map<Itinerary>((json) => Itinerary(
@@ -104,19 +104,21 @@ class FirebaseApiService {
     return detailPackage;
   }
 
-  ///Get a travel package in detail
+  ///Get a booking info in detail
   Future<List<BookingDetail>> getBookings(String userId) async {
     CollectionReference packages =
         FirebaseFirestore.instance.collection('bookings');
-    final result = await packages.where('userId', isEqualTo: userId).get();
+    final result = await packages.where('user_id', isEqualTo: userId).get();
 
     List<BookingDetail> bookings = [];
 
     for (var doc in result.docs) {
       final booking = BookingDetail(
           id: doc.id,
-          packageId: doc['packageId'],
-          userId: doc['userId'],
+          packageId: doc['package_id'],
+          partnerName: doc['partner_name'],
+          packageTitle: doc['package_title'],
+          userId: doc['user_id'],
           email: doc['email'],
           custFirstName: doc['first_name'],
           custLastName: doc['last_name'],
@@ -130,7 +132,13 @@ class FirebaseApiService {
           totalPrice: doc['total_price'],
           status: doc['status'] == 'ACTIVE'
               ? BookingStatus.active
-              : BookingStatus.cancelled);
+              : BookingStatus.cancelled
+          // status: doc['status'] == 'ACTIVE'
+          //     ? BookingStatus.active
+          //     : doc['status'] == 'COMPLETED'
+          //         ? BookingStatus.completed
+          //         : BookingStatus.cancelled
+          );
       bookings.add(booking);
     }
     return bookings;
@@ -139,11 +147,13 @@ class FirebaseApiService {
   ///Create a new booking for user
   Future<void> createNewBooking(
       {required BookingDetail booking, required int totalPrice}) async {
-    CollectionReference packages =
+    CollectionReference bookings =
         FirebaseFirestore.instance.collection('bookings');
-    await packages.add({
-      'packageId': booking.packageId,
-      'userId': booking.userId,
+    await bookings.add({
+      'package_id': booking.packageId,
+      'package_title': booking.packageTitle,
+      'partner_name': booking.partnerName,
+      'user_id': booking.userId,
       'first_name': booking.custFirstName,
       'last_name': booking.custLastName,
       'email': booking.email,
@@ -157,5 +167,11 @@ class FirebaseApiService {
       'image_url': booking.imageUrl,
       'status': 'ACTIVE'
     });
+  }
+
+  Future<void> cancelBooking(String bookingId) async {
+    CollectionReference bookings =
+        FirebaseFirestore.instance.collection('bookings');
+    await bookings.doc(bookingId).update({'status': 'CANCELLED'});
   }
 }

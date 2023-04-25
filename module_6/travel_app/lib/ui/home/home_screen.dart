@@ -65,7 +65,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                 builder: (context) => DetailScreen(
                                   id: package.id,
                                   title: package.title,
-                                  price: package.price,
                                 ),
                               ),
                             );

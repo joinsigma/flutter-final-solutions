@@ -30,10 +30,14 @@ class TriggerBooking extends BookingConfirmEvent {
   final DateTime startDate;
   final DateTime endDate;
   final String packageId;
+  final String packageTitle;
+  final String partnerName;
   final int totalPrice;
   final String imageUrl;
   const TriggerBooking({
     required this.packageId,
+    required this.packageTitle,
+    required this.partnerName,
     required this.fName,
     required this.lName,
     required this.email,
@@ -56,7 +60,10 @@ class TriggerBooking extends BookingConfirmEvent {
         startDate,
         endDate,
         totalPrice,
-        imageUrl
+        imageUrl,
+        partnerName,
+        packageTitle,
+        packageId,
       ];
 }
 
@@ -116,7 +123,7 @@ class BookingConfirmBloc
     emit(BookingConfirmInitial(
       packagePrice: result.price,
       packageTitle: result.title,
-      packageProvider: result.provider,
+      packageProvider: result.partnerName,
       packageLocation: result.location,
       packageRating: result.rating,
       imageUrl: result.imgUrls[0],
@@ -129,6 +136,8 @@ class BookingConfirmBloc
     final booking = BookingDetail(
         id: '1',
         userId: '1',
+        partnerName: event.partnerName,
+        packageTitle: event.packageTitle,
         packageId: event.packageId,
         email: event.email,
         billingAddress: event.billingAddress,
