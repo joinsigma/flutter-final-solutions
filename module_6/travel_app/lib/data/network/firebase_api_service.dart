@@ -178,7 +178,8 @@ class FirebaseApiService {
   Future<bool> isPackageLikedByUser(String userId, String packageId) async {
     CollectionReference users = FirebaseFirestore.instance.collection('users');
     final user = await users.doc(userId).get();
-    // final likes = user['likes'] == null ? [] :List<String>.from(user['likes']);
+
+    ///Initial likes array must be empty not null
     final likes = List<String>.from(user['likes']);
     return likes.contains(packageId) ? true : false;
   }
@@ -189,11 +190,35 @@ class FirebaseApiService {
   }) async {
     CollectionReference users = FirebaseFirestore.instance.collection('users');
 
-    ///If your document contains an array field, you can use arrayUnion() and arrayRemove() to add and remove elements. arrayUnion() adds elements to an array but only elements not already present. arrayRemove() removes all instances of each given element.
+    ///If your document contains an array field, you can use arrayUnion()
+    /// and arrayRemove() to add and remove elements.
+    /// arrayUnion() adds elements to an array but only elements not already present. arrayRemove() removes all instances of each given element.
     await users.doc(userId).update({
       'likes': FieldValue.arrayUnion([packageId])
     });
   }
+
+  // Future<void> addPackageToUserLikes(
+  //     {required String userId,
+  //     required String packageId,
+  //     required String location,
+  //     required int pricePerPax,
+  //     required String title}) async {
+  //   CollectionReference users = FirebaseFirestore.instance.collection('users');
+  //
+  //   ///If your document contains an array field, you can use arrayUnion()
+  //   /// and arrayRemove() to add and remove elements.
+  //   /// arrayUnion() adds elements to an array but only elements not already present. arrayRemove() removes all instances of each given element.
+  //   final like = <String, dynamic>{
+  //     'package_id': packageId,
+  //     'title': title,
+  //     'location': location,
+  //     'price_per_pax': pricePerPax,
+  //   };
+  //   await users.doc(userId).update({
+  //     'likes': FieldValue.arrayUnion([like])
+  //   });
+  // }
 
   Future<void> removePackageFromUserLikes({
     required String userId,
@@ -204,5 +229,33 @@ class FirebaseApiService {
     await users.doc(userId).update({
       'likes': FieldValue.arrayRemove([packageId])
     });
+  }
+
+  Future<List<Package>> getLikedPackagesByUser(String userId) async {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    CollectionReference packages =
+        FirebaseFirestore.instance.collection('packages');
+
+    ///Get user info
+    final result = await users.doc(userId).get();
+
+    ///Query package details based on ids that are liked by user
+    List<dynamic> ids = result['likes'];
+    if (ids.isEmpty) return [];
+    final likes =
+        await packages.where(FieldPath.documentId, whereIn: ids).get();
+    List<Package> pkgs = [];
+
+    for (var doc in likes.docs) {
+      final package = Package(
+          id: doc.id,
+          title: doc['title'],
+          location: doc['location'],
+          imgUrl: doc['main_img_url'],
+          price: doc['price_per_pax'],
+          tags: List<String>.from(doc['tags']));
+      pkgs.add(package);
+    }
+    return pkgs;
   }
 }

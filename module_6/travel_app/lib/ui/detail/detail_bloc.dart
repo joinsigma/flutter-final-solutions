@@ -19,13 +19,32 @@ class LoadPackageDetail extends DetailEvent {
   List<Object?> get props => [];
 }
 
-class TogglePackageLike extends DetailEvent {
-  final bool isLiked;
+class TriggerPackageLike extends DetailEvent {
   final String packageId;
-  const TogglePackageLike({required this.isLiked, required this.packageId});
+  const TriggerPackageLike(this.packageId);
   @override
-  List<Object?> get props => [isLiked, packageId];
+  List<Object?> get props => [packageId];
 }
+
+///KIV
+// class TogglePackageLike extends DetailEvent {
+//   final bool isLiked;
+//   final String title;
+//   final String location;
+//   final int pricePerPax;
+//   final String imageUrl;
+//   final String packageId;
+//   const TogglePackageLike(
+//       {required this.title,
+//       required this.location,
+//       required this.imageUrl,
+//       required this.isLiked,
+//       required this.pricePerPax,
+//       required this.packageId});
+//   @override
+//   List<Object?> get props =>
+//       [isLiked, packageId, pricePerPax, imageUrl, title, location];
+// }
 
 ///State
 abstract class DetailState extends Equatable {
@@ -52,7 +71,7 @@ class DetailBloc extends Bloc<DetailEvent, DetailState> {
   final TravelPackageRepository _travelPackageRepository;
   DetailBloc(this._travelPackageRepository) : super(DetailLoading()) {
     on<LoadPackageDetail>(_onLoadDetailPackage);
-    on<TogglePackageLike>(_onTogglePackageLike);
+    on<TriggerPackageLike>(_onTriggerPackageLike);
   }
 
   void _onLoadDetailPackage(
@@ -62,13 +81,12 @@ class DetailBloc extends Bloc<DetailEvent, DetailState> {
     emit(DetailLoadSuccess(isLiked: isLiked, package: result));
   }
 
-  void _onTogglePackageLike(
-      TogglePackageLike event, Emitter<DetailState> emit) async {
+  void _onTriggerPackageLike(
+      TriggerPackageLike event, Emitter<DetailState> emit) async {
     final currentState = state as DetailLoadSuccess;
     emit(DetailLoading());
-    final isLiked = await _travelPackageRepository.toggleLikePackage(
-        isLiked: event.isLiked, packageId: event.packageId);
+    await _travelPackageRepository.likePackage(packageId: event.packageId);
 
-    emit(DetailLoadSuccess(isLiked: isLiked, package: currentState.package));
+    emit(DetailLoadSuccess(isLiked: true, package: currentState.package));
   }
 }

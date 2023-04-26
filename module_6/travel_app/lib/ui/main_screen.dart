@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:travel_app/ui/booking/booking_screen.dart';
-import 'package:travel_app/ui/favourite/favourite_screen.dart';
+import 'package:travel_app/ui/likes/likes_screen.dart';
 import 'package:travel_app/ui/profile/profile_screen.dart';
 
 import 'home/home_screen.dart';
@@ -38,7 +38,7 @@ class _MainScreenState extends State<MainScreen> {
           ///For starter just try to complete the design by using helper widgets in build methods (_buildMainSection()).
           ///Later you can refactor to individual widgets in separate files. Whatever makes it easy for you.
           HomeScreen(),
-          FavouriteScreen(),
+          LikesScreen(),
           BookingScreen(),
           ProfileScreen()
         ],

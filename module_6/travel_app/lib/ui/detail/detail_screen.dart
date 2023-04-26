@@ -57,11 +57,15 @@ class _DetailScreenState extends State<DetailScreen> {
                           style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.grey[100],
                               shape: const CircleBorder()),
-                          onPressed: () {
-                            _detailBloc.add(
-                                TogglePackageLike(isLiked: false,
-                                    packageId: widget.id));
-                          },
+                          onPressed: () {},
+
+                          ///Todo: Remove unlike feature in detail screen.
+                          // onPressed: () {
+                          //   _detailBloc.add(
+                          //       TogglePackageLike(isLiked: false,
+                          //           packageId: widget.id));
+                          //
+                          // },
                           child: const Icon(
                             Icons.favorite,
                             color: Colors.red,
@@ -75,9 +79,7 @@ class _DetailScreenState extends State<DetailScreen> {
                               backgroundColor: Colors.grey[100],
                               shape: const CircleBorder()),
                           onPressed: () {
-                            _detailBloc.add(
-                                TogglePackageLike(isLiked: true,
-                                    packageId: widget.id));
+                            _detailBloc.add(TriggerPackageLike(widget.id));
                           },
                           child: const Icon(
                             Icons.favorite_outline,

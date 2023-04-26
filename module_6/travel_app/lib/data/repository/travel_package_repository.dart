@@ -25,15 +25,24 @@ class TravelPackageRepository {
     return result;
   }
 
-  Future<bool> toggleLikePackage({required String packageId, required bool isLiked}) async {
-    if (isLiked) {
-      await _firebaseApiService.addPackageToUserLikes(
-          userId: 'saJ9hRqRMHVZPfN7Jv76', packageId: packageId);
-      return true;
-    } else {
-      await _firebaseApiService.removePackageFromUserLikes(
-          userId: 'saJ9hRqRMHVZPfN7Jv76', packageId: packageId);
-      return false;
-    }
+  Future<void> likePackage({
+    required String packageId,
+  }) async {
+    await _firebaseApiService.addPackageToUserLikes(
+      userId: 'saJ9hRqRMHVZPfN7Jv76',
+      packageId: packageId,
+    );
+  }
+
+  Future<List<Package>> fetchLikedPackages() async {
+    return await _firebaseApiService
+        .getLikedPackagesByUser('saJ9hRqRMHVZPfN7Jv76');
+  }
+
+  Future<void> unLikePackage({
+    required String packageId,
+  }) async {
+    await _firebaseApiService.removePackageFromUserLikes(
+        userId: 'saJ9hRqRMHVZPfN7Jv76', packageId: packageId);
   }
 }
