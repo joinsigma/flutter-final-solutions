@@ -45,6 +45,7 @@ dependencies:
   kiwi: ^4.1.0
   syncfusion_flutter_datepicker: ^20.3.61
   intl: ^0.17.0
+  shared_preferences: ^2.1.0
 
 dev_dependencies:
   flutter_test:

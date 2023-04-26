@@ -1,16 +1,49 @@
 import 'package:travel_app/data/network/firebase_api_service.dart';
 
+import '../storage/exceptions.dart';
+import '../storage/local_storage_service.dart';
+
 class UserRepository {
   final FirebaseApiService _firebaseApiService;
+  final LocalStorageService _localStorageService;
 
-  UserRepository(this._firebaseApiService);
+  UserRepository(this._firebaseApiService, this._localStorageService);
 
-  Future<bool> isTravelPackageLiked(String packageId) async {
-    final result = await _firebaseApiService.isPackageLikedByUser(
-        'saJ9hRqRMHVZPfN7Jv76', packageId);
+  Future<void> loginUser(
+      {required String email, required String password}) async {
+    final uid = await _firebaseApiService.loginWithEmailPassword(
+        email: email, password: password);
 
-    return result;
+    if (uid != null) {
+      _localStorageService.saveUserId(uid);
+    } else {
+      throw UidException();
+    }
   }
 
+  Future<void> registerUser({
+    required String email,
+    required String password,
+  }) async {
+    final uid = await _firebaseApiService.registerWithEmailPassword(
+        email: email, password: password);
 
+    if (uid != null) {
+      _localStorageService.saveUserId(uid);
+    } else {
+      throw UidException();
+    }
+
+    ///Initialize user firestore
+    await _firebaseApiService.initializeUserInfo(email: email, uid: uid);
+  }
+
+  Future<bool> isUserLoggedIn() async {
+    try {
+      final result = await _localStorageService.getUserId();
+      return result.isNotEmpty;
+    } on NoAuthTokenFoundException catch (_) {
+      return false;
+    }
+  }
 }

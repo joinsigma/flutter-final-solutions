@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kiwi/kiwi.dart' as kiwi;
+import 'package:travel_app/ui/authentication/register/register_bloc.dart';
+import 'package:travel_app/ui/main_screen.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -8,6 +12,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  late RegisterBloc _registerBloc;
   late TextEditingController _emailCtrl;
   late TextEditingController _passwordCtrl;
   late GlobalKey<FormState> _registerFormKey;
@@ -17,6 +22,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   void initState() {
+    _registerBloc = kiwi.KiwiContainer().resolve<RegisterBloc>();
     _emailCtrl = TextEditingController();
     _passwordCtrl = TextEditingController();
     _registerFormKey = GlobalKey<FormState>();
@@ -25,6 +31,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   void dispose() {
+    _registerBloc.close();
     _emailCtrl.dispose();
     _passwordCtrl.dispose();
     super.dispose();
@@ -32,6 +39,35 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => _registerBloc,
+      child: BlocConsumer<RegisterBloc, RegisterState>(
+        listener: (context, state) {
+          if (state is RegisterSuccess) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const MainScreen(),
+              ),
+            );
+          }
+        },
+        builder: (context, state) {
+          if (state is RegisterLoading) {
+            return _buildRegisterForm(isRegisterError: false, isLoading: true);
+          } else if (state is RegisterInitial) {
+            return _buildRegisterForm(isRegisterError: false, isLoading: false);
+          } else if (state is RegisterFailure) {
+            return _buildRegisterForm(isRegisterError: true, isLoading: false);
+          }
+          return Container();
+        },
+      ),
+    );
+  }
+
+  Widget _buildRegisterForm(
+      {required bool isRegisterError, required bool isLoading}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30.0),
       child: Form(
@@ -40,7 +76,7 @@ class _RegisterPageState extends State<RegisterPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              Icons.note_alt_rounded,
+              Icons.airplane_ticket,
               size: 40,
               color: Theme.of(context).primaryColor,
             ),
@@ -80,18 +116,28 @@ class _RegisterPageState extends State<RegisterPage> {
             const SizedBox(
               height: 30.0,
             ),
-            _isLoading
+            isLoading
                 ? const CircularProgressIndicator()
                 : SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () async {
-                        ///TODO: Register new account
+                        ///Validate the form here
+                        if (_registerFormKey.currentState!.validate()) {
+                          _registerBloc.add(
+                            TriggerRegister(
+                                email: _emailCtrl.text,
+                                password: _passwordCtrl.text),
+                          );
+                        }
                       },
-                      child: const Text('Register'),
+                      child: const Text(
+                        'Register',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
-            if (_isApiError)
+            if (isRegisterError)
               const Text('Register API error, please retry.',
                   style: TextStyle(color: Colors.red))
           ],

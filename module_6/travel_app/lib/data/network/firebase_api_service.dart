@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:travel_app/data/network/exceptions.dart';
 
 import '../model/booking_detail.dart';
 import '../model/detail_package.dart';
@@ -7,52 +8,65 @@ import '../model/package.dart';
 
 class FirebaseApiService {
   ///New user registration
-  Future<String?> registration({
+  Future<String?> registerWithEmailPassword({
     required String email,
     required String password,
   }) async {
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      final result = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-
-      return 'Success';
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        return 'The password provided is too weak.';
-      } else if (e.code == 'email-already-in-use') {
-        return 'The account already exists for that email.';
-      } else {
-        return e.message;
-      }
-    } catch (e) {
-      return e.toString();
+      return result.user?.uid;
+      // // return UserBasic(uid: result.user.uid, token: result.credential.accessToken);
+      // result.credential.token;
+      // result.user.uid;
+      //
+      // return 'Success';
     }
+    on FirebaseAuthException catch(e) {
+      throw UserRegistrationException('Register Error');
+    }
+    // on FirebaseAuthException catch (e) {
+    //   if (e.code == 'weak-password') {
+    //     return 'The password provided is too weak.';
+    //   } else if (e.code == 'email-already-in-use') {
+    //     return 'The account already exists for that email.';
+    //   } else {
+    //     return e.message;
+    //   }
+    // } catch (e) {
+    //   return e.toString();
+    // }
   }
 
   ///Existing User login
-  Future<String?> login({
+  Future<String?> loginWithEmailPassword({
     required String email,
     required String password,
   }) async {
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      final result = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      return 'Success';
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        return 'No user found for that email.';
-      } else if (e.code == 'wrong-password') {
-        return 'Wrong password provided for that user.';
-      } else {
-        return e.message;
-      }
-    } catch (e) {
-      return e.toString();
+      return result.user?.uid;
     }
+    on FirebaseAuthException catch(e) {
+      throw UserLoginException('Login Error');
+    }
+    // on FirebaseAuthException catch (e) {
+    //   if (e.code == 'user-not-found') {
+    //     return 'No user found for that email.';
+    //   } else if (e.code == 'wrong-password') {
+    //     return 'Wrong password provided for that user.';
+    //   } else {
+    //     return e.message;
+    //   }
+    // }
+    // catch (e) {
+    //   return e.toString();
+    // }
   }
 
   ///Existing User logout
@@ -257,5 +271,24 @@ class FirebaseApiService {
       pkgs.add(package);
     }
     return pkgs;
+  }
+
+
+  ///Initialize user details after new registration
+  Future<void> initializeUserInfo(
+      {required String email, required String uid}) async {
+    CollectionReference users =
+    FirebaseFirestore.instance.collection('users');
+
+    await users.doc(uid).set({
+      'bookings': [],
+      'likes': [],
+      'email': email,
+      'profile_name': "user",
+      'profile_img_url': "",
+      'mobile_no': "",
+      'billing_address': "",
+      'created_at': DateTime.now(),
+    });
   }
 }

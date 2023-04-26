@@ -26,26 +26,6 @@ class TriggerPackageLike extends DetailEvent {
   List<Object?> get props => [packageId];
 }
 
-///KIV
-// class TogglePackageLike extends DetailEvent {
-//   final bool isLiked;
-//   final String title;
-//   final String location;
-//   final int pricePerPax;
-//   final String imageUrl;
-//   final String packageId;
-//   const TogglePackageLike(
-//       {required this.title,
-//       required this.location,
-//       required this.imageUrl,
-//       required this.isLiked,
-//       required this.pricePerPax,
-//       required this.packageId});
-//   @override
-//   List<Object?> get props =>
-//       [isLiked, packageId, pricePerPax, imageUrl, title, location];
-// }
-
 ///State
 abstract class DetailState extends Equatable {
   const DetailState();
