@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travel_app/data/model/detail_package.dart';
 
 import '../../data/repository/travel_package_repository.dart';
-import '../../data/repository/user_repository.dart';
 
 ///Event
 abstract class DetailEvent extends Equatable {

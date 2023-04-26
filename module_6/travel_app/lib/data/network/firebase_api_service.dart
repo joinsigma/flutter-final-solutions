@@ -280,6 +280,7 @@ class FirebaseApiService {
     CollectionReference users =
     FirebaseFirestore.instance.collection('users');
 
+    ///Use set operation instead of add, to make sure uid from FirebaseAuth is the same as Doc id.
     await users.doc(uid).set({
       'bookings': [],
       'likes': [],

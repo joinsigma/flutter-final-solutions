@@ -42,8 +42,11 @@ class UserRepository {
     try {
       final result = await _localStorageService.getUserId();
       return result.isNotEmpty;
-    } on NoAuthTokenFoundException catch (_) {
+    } on NoUidFoundException catch (_) {
       return false;
     }
+  }
+  void deleteUserId() async {
+    _localStorageService.deleteUserId();
   }
 }

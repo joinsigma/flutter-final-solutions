@@ -13,6 +13,7 @@ import 'package:travel_app/ui/confirm/booking_confirm_bloc.dart';
 import 'package:travel_app/ui/detail/detail_bloc.dart';
 import 'package:travel_app/ui/home/home_bloc.dart';
 import 'package:travel_app/ui/likes/likes_bloc.dart';
+import 'package:travel_app/ui/profile/profile_bloc.dart';
 
 void initKiwi() {
   final container = kiwi.KiwiContainer();
@@ -93,6 +94,12 @@ void initKiwi() {
   container.registerFactory(
     (c) => LikesBloc(
       c.resolve<TravelPackageRepository>(),
+    ),
+  );
+
+  container.registerFactory(
+        (c) => ProfileBloc(
+      c.resolve<UserRepository>(),
     ),
   );
 }
