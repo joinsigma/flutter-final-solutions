@@ -8,3 +8,5 @@ class UserLoginException implements Exception {
   final String message;
   UserLoginException(this.message);
 }
+
+class ProfileImageUploadException implements Exception {}

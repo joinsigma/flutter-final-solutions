@@ -1,10 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:travel_app/data/model/user.dart';
 import 'package:travel_app/data/network/exceptions.dart';
+import 'package:uuid/uuid.dart';
 
 import '../model/booking_detail.dart';
 import '../model/detail_package.dart';
 import '../model/package.dart';
+import 'dart:io';
 
 class FirebaseApiService {
   ///New user registration
@@ -23,8 +27,7 @@ class FirebaseApiService {
       // result.user.uid;
       //
       // return 'Success';
-    }
-    on FirebaseAuthException catch(e) {
+    } on FirebaseAuthException catch (e) {
       throw UserRegistrationException('Register Error');
     }
     // on FirebaseAuthException catch (e) {
@@ -51,8 +54,7 @@ class FirebaseApiService {
         password: password,
       );
       return result.user?.uid;
-    }
-    on FirebaseAuthException catch(e) {
+    } on FirebaseAuthException catch (e) {
       throw UserLoginException('Login Error');
     }
     // on FirebaseAuthException catch (e) {
@@ -160,14 +162,15 @@ class FirebaseApiService {
 
   ///Create a new booking for user
   Future<void> createNewBooking(
-      {required BookingDetail booking, required int totalPrice}) async {
+      {required BookingDetail booking, required int totalPrice,required String uid}) async {
     CollectionReference bookings =
         FirebaseFirestore.instance.collection('bookings');
-    await bookings.add({
+   final result =  await bookings.add({
       'package_id': booking.packageId,
       'package_title': booking.packageTitle,
       'partner_name': booking.partnerName,
-      'user_id': booking.userId,
+      // 'user_id': booking.userId,
+      'user_id': uid,
       'first_name': booking.custFirstName,
       'last_name': booking.custLastName,
       'email': booking.email,
@@ -181,12 +184,21 @@ class FirebaseApiService {
       'image_url': booking.imageUrl,
       'status': 'ACTIVE'
     });
+
+   ///Add booking id under user info. This is to calculate number of trips in profile section.
+    CollectionReference users =
+    FirebaseFirestore.instance.collection('users');
+    await users.doc(uid).update({
+      'bookings': FieldValue.arrayUnion([result.id])
+    });
+
   }
 
   Future<void> cancelBooking(String bookingId) async {
     CollectionReference bookings =
         FirebaseFirestore.instance.collection('bookings');
     await bookings.doc(bookingId).update({'status': 'CANCELLED'});
+
   }
 
   Future<bool> isPackageLikedByUser(String userId, String packageId) async {
@@ -273,12 +285,10 @@ class FirebaseApiService {
     return pkgs;
   }
 
-
   ///Initialize user details after new registration
   Future<void> initializeUserInfo(
       {required String email, required String uid}) async {
-    CollectionReference users =
-    FirebaseFirestore.instance.collection('users');
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
 
     ///Use set operation instead of add, to make sure uid from FirebaseAuth is the same as Doc id.
     await users.doc(uid).set({
@@ -291,5 +301,42 @@ class FirebaseApiService {
       'billing_address': "",
       'created_at': DateTime.now(),
     });
+  }
+
+  Future<UserDetail> getUserDetail(String uid) async {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+    final result = await users.doc(uid).get();
+    final user = UserDetail(
+        uid: result.id,
+        name: result['profile_name'],
+        imageUrl: result['profile_img_url'],
+        email: result['email'],
+        mobileNum: result['mobile_no'],
+        address: result['billing_address'],
+        numLikes: List<String>.from(result['likes']).length,
+        numTrips: List<String>.from(result['bookings']).length);
+    print(result['likes']);
+    print('numlikes;${user.numLikes}');
+    return user;
+  }
+
+  Future<String> uploadProfileImage(File imgFile) async {
+    final storageRef = FirebaseStorage.instance.ref();
+    var uuid = const Uuid();
+    final profileImageRef = storageRef.child("profile-images/${uuid.v4()}.jpg");
+    try {
+      await profileImageRef.putFile(imgFile);
+      final url = await profileImageRef.getDownloadURL();
+      return url;
+    } catch (e) {
+      throw ProfileImageUploadException();
+    }
+  }
+
+  Future<void> updateProfileImageUrl(
+      {required String uid, required String url}) async {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    await users.doc(uid).update({'profile_img_url': url});
   }
 }

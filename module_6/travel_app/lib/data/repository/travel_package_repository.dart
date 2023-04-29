@@ -2,11 +2,13 @@ import 'package:travel_app/data/model/package.dart';
 
 import '../model/detail_package.dart';
 import '../network/firebase_api_service.dart';
+import '../storage/local_storage_service.dart';
 
 class TravelPackageRepository {
   final FirebaseApiService _firebaseApiService;
+  final LocalStorageService _localStorageServie;
 
-  TravelPackageRepository(this._firebaseApiService);
+  TravelPackageRepository(this._firebaseApiService,this._localStorageServie);
 
   Future<List<Package>> fetchPackages() async {
     final result = await _firebaseApiService.getPackages();
@@ -19,8 +21,9 @@ class TravelPackageRepository {
   }
 
   Future<bool> isPackageLiked(String packageId) async {
+    final uid = await _localStorageServie.getUserId();
     final result = await _firebaseApiService.isPackageLikedByUser(
-        'saJ9hRqRMHVZPfN7Jv76', packageId);
+        uid, packageId);
 
     return result;
   }
@@ -28,21 +31,25 @@ class TravelPackageRepository {
   Future<void> likePackage({
     required String packageId,
   }) async {
+    final uid = await _localStorageServie.getUserId();
     await _firebaseApiService.addPackageToUserLikes(
-      userId: 'saJ9hRqRMHVZPfN7Jv76',
+      userId: uid,
       packageId: packageId,
     );
   }
 
   Future<List<Package>> fetchLikedPackages() async {
+    final uid = await _localStorageServie.getUserId();
+    print(uid);
     return await _firebaseApiService
-        .getLikedPackagesByUser('saJ9hRqRMHVZPfN7Jv76');
+        .getLikedPackagesByUser(uid);
   }
 
   Future<void> unLikePackage({
     required String packageId,
   }) async {
+    final uid = await _localStorageServie.getUserId();
     await _firebaseApiService.removePackageFromUserLikes(
-        userId: 'saJ9hRqRMHVZPfN7Jv76', packageId: packageId);
+        userId: uid, packageId: packageId);
   }
 }

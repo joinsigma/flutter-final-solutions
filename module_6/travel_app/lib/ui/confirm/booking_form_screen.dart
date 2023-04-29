@@ -222,7 +222,7 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
   Widget _datePicker(BuildContext context) {
     return SafeArea(
       child: SfDateRangePicker(
-        enablePastDates: true,
+        enablePastDates: false,
         controller: DateRangePickerController(),
         showActionButtons: true,
         onSubmit: (value) {

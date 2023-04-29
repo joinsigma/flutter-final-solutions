@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:travel_app/data/network/firebase_api_service.dart';
 
+import '../model/user.dart';
 import '../storage/exceptions.dart';
 import '../storage/local_storage_service.dart';
 
@@ -46,7 +49,27 @@ class UserRepository {
       return false;
     }
   }
+
+  ///For logout feature
   void deleteUserId() async {
     _localStorageService.deleteUserId();
+  }
+
+  Future<UserDetail> fetchUserDetail() async {
+    final uid = await _localStorageService.getUserId();
+    final result = await _firebaseApiService.getUserDetail(uid);
+    return result;
+  }
+
+  Future<void> saveNewProfileImage(File profileImage) async {
+    ///Get user id
+    final uid = await _localStorageService.getUserId();
+
+    ///Upload to firebase storage
+    final newImgUrl =
+        await _firebaseApiService.uploadProfileImage(profileImage);
+
+    ///update user profile
+    await _firebaseApiService.updateProfileImageUrl(uid: uid, url: newImgUrl);
   }
 }

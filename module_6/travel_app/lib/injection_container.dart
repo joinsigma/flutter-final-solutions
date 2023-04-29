@@ -26,12 +26,14 @@ void initKiwi() {
   container.registerSingleton(
     (c) => TravelPackageRepository(
       c.resolve<FirebaseApiService>(),
+      c.resolve<LocalStorageService>(),
     ),
   );
 
   container.registerSingleton(
     (c) => BookingRepository(
       c.resolve<FirebaseApiService>(),
+      c.resolve<LocalStorageService>(),
     ),
   );
   container.registerSingleton(
