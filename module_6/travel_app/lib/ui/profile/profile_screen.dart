@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:travel_app/ui/authentication/authentication_screen.dart';
+import 'package:travel_app/ui/edit_profile/edit_profile_screen.dart';
 import 'package:travel_app/ui/profile/profile_bloc.dart';
 import 'package:travel_app/ui/profile/widgets/profile_card.dart';
 import 'package:kiwi/kiwi.dart' as kiwi;
@@ -63,7 +64,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       padding: const EdgeInsets.only(right: 8.0),
                       child: GestureDetector(
                         onTap: () {
-                          ///Todo: Navigate to Edit profile
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EditProfileScreen(
+                                      name: state.userDetail.name,
+                                      email: state.userDetail.email,
+                                      address: state.userDetail.address,
+                                      mobileNum: state.userDetail.mobileNum)));
                         },
                         child: const Text('Edit'),
                       ),
@@ -176,6 +184,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ListTile(
                   title: const Text('Email'),
                   subtitle: Text(state.userDetail.email),
+                ),
+                const Divider(),
+                ListTile(
+                  title: const Text('Mobile No'),
+                  subtitle: Text(state.userDetail.mobileNum),
                 ),
                 const Divider(),
                 ListTile(

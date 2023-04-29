@@ -162,10 +162,12 @@ class FirebaseApiService {
 
   ///Create a new booking for user
   Future<void> createNewBooking(
-      {required BookingDetail booking, required int totalPrice,required String uid}) async {
+      {required BookingDetail booking,
+      required int totalPrice,
+      required String uid}) async {
     CollectionReference bookings =
         FirebaseFirestore.instance.collection('bookings');
-   final result =  await bookings.add({
+    final result = await bookings.add({
       'package_id': booking.packageId,
       'package_title': booking.packageTitle,
       'partner_name': booking.partnerName,
@@ -185,20 +187,17 @@ class FirebaseApiService {
       'status': 'ACTIVE'
     });
 
-   ///Add booking id under user info. This is to calculate number of trips in profile section.
-    CollectionReference users =
-    FirebaseFirestore.instance.collection('users');
+    ///Add booking id under user info. This is to calculate number of trips in profile section.
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
     await users.doc(uid).update({
       'bookings': FieldValue.arrayUnion([result.id])
     });
-
   }
 
   Future<void> cancelBooking(String bookingId) async {
     CollectionReference bookings =
         FirebaseFirestore.instance.collection('bookings');
     await bookings.doc(bookingId).update({'status': 'CANCELLED'});
-
   }
 
   Future<bool> isPackageLikedByUser(String userId, String packageId) async {
@@ -338,5 +337,22 @@ class FirebaseApiService {
       {required String uid, required String url}) async {
     CollectionReference users = FirebaseFirestore.instance.collection('users');
     await users.doc(uid).update({'profile_img_url': url});
+  }
+
+  Future<void> updateUserProfile({
+    required String uid,
+    required String name,
+    required String email,
+    required String address,
+    required String mobileNum,
+  }) async {
+    CollectionReference users =
+        FirebaseFirestore.instance.collection('users');
+    await users.doc(uid).update({
+      'email': email,
+      'profile_name': name,
+      'mobile_no': mobileNum,
+      'billing_address': address,
+    });
   }
 }

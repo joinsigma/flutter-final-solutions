@@ -72,4 +72,18 @@ class UserRepository {
     ///update user profile
     await _firebaseApiService.updateProfileImageUrl(uid: uid, url: newImgUrl);
   }
+
+  Future<void> updateUserProfile(
+      {required String name,
+      required String address,
+      required String mobileNum,
+      required String email}) async {
+    final uid = await _localStorageService.getUserId();
+    await _firebaseApiService.updateUserProfile(
+        uid: uid,
+        name: name,
+        email: email,
+        address: address,
+        mobileNum: mobileNum);
+  }
 }

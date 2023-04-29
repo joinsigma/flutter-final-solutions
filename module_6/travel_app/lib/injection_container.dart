@@ -11,6 +11,7 @@ import 'package:travel_app/ui/booking/booking_bloc.dart';
 import 'package:travel_app/ui/cancel/cancel_booking_bloc.dart';
 import 'package:travel_app/ui/confirm/booking_confirm_bloc.dart';
 import 'package:travel_app/ui/detail/detail_bloc.dart';
+import 'package:travel_app/ui/edit_profile/edit_profile_bloc.dart';
 import 'package:travel_app/ui/home/home_bloc.dart';
 import 'package:travel_app/ui/likes/likes_bloc.dart';
 import 'package:travel_app/ui/profile/profile_bloc.dart';
@@ -101,6 +102,12 @@ void initKiwi() {
 
   container.registerFactory(
         (c) => ProfileBloc(
+      c.resolve<UserRepository>(),
+    ),
+  );
+
+  container.registerFactory(
+        (c) => EditProfileBloc(
       c.resolve<UserRepository>(),
     ),
   );
