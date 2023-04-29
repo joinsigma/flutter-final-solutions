@@ -4,6 +4,7 @@ import 'package:travel_app/ui/detail/detail_screen.dart';
 import 'package:travel_app/ui/home/home_bloc.dart';
 import 'package:travel_app/ui/home/widgets/travel_package_card.dart';
 import 'package:kiwi/kiwi.dart' as kiwi;
+import 'package:travel_app/ui/search/search_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -34,9 +35,14 @@ class _HomeScreenState extends State<HomeScreen> {
       child: SafeArea(
         child: Column(
           children: [
-            const Padding(
-              padding: EdgeInsets.all(8.0),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
               child: TextField(
+                // enabled: false,
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) =>const SearchScreen()));
+                },
                 decoration: InputDecoration(
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(

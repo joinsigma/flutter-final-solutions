@@ -76,6 +76,26 @@ class FirebaseApiService {
     await FirebaseAuth.instance.signOut();
   }
 
+  ///Search travel packages based on keyword
+  Future<List<Package>> searchPackages(String query) async {
+    CollectionReference packages =
+    FirebaseFirestore.instance.collection('packages');
+    final result = await packages.where('location',isGreaterThanOrEqualTo: query).get();
+    List<Package> pkgs = [];
+
+    for (var doc in result.docs) {
+      final package = Package(
+          id: doc.id,
+          title: doc['title'],
+          location: doc['location'],
+          imgUrl: doc['main_img_url'],
+          price: doc['price_per_pax'],
+          tags: List<String>.from(doc['tags']));
+      pkgs.add(package);
+    }
+    return pkgs;
+  }
+
   ///Get list of travel packages
   Future<List<Package>> getPackages() async {
     CollectionReference packages =
@@ -355,4 +375,5 @@ class FirebaseApiService {
       'billing_address': address,
     });
   }
+
 }

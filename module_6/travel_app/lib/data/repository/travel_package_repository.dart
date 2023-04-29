@@ -8,7 +8,12 @@ class TravelPackageRepository {
   final FirebaseApiService _firebaseApiService;
   final LocalStorageService _localStorageServie;
 
-  TravelPackageRepository(this._firebaseApiService,this._localStorageServie);
+  TravelPackageRepository(this._firebaseApiService, this._localStorageServie);
+
+  Future<List<Package>> searchPackages(String query) async {
+    final result = await _firebaseApiService.searchPackages(query);
+    return result;
+  }
 
   Future<List<Package>> fetchPackages() async {
     final result = await _firebaseApiService.getPackages();
@@ -22,8 +27,8 @@ class TravelPackageRepository {
 
   Future<bool> isPackageLiked(String packageId) async {
     final uid = await _localStorageServie.getUserId();
-    final result = await _firebaseApiService.isPackageLikedByUser(
-        uid, packageId);
+    final result =
+        await _firebaseApiService.isPackageLikedByUser(uid, packageId);
 
     return result;
   }
@@ -41,8 +46,7 @@ class TravelPackageRepository {
   Future<List<Package>> fetchLikedPackages() async {
     final uid = await _localStorageServie.getUserId();
     print(uid);
-    return await _firebaseApiService
-        .getLikedPackagesByUser(uid);
+    return await _firebaseApiService.getLikedPackagesByUser(uid);
   }
 
   Future<void> unLikePackage({

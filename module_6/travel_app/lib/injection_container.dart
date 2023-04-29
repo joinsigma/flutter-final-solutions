@@ -15,6 +15,7 @@ import 'package:travel_app/ui/edit_profile/edit_profile_bloc.dart';
 import 'package:travel_app/ui/home/home_bloc.dart';
 import 'package:travel_app/ui/likes/likes_bloc.dart';
 import 'package:travel_app/ui/profile/profile_bloc.dart';
+import 'package:travel_app/ui/search/search_bloc.dart';
 
 void initKiwi() {
   final container = kiwi.KiwiContainer();
@@ -65,6 +66,12 @@ void initKiwi() {
 
   container.registerFactory(
     (c) => HomeBloc(
+      c.resolve<TravelPackageRepository>(),
+    ),
+  );
+
+  container.registerFactory(
+        (c) => SearchBloc(
       c.resolve<TravelPackageRepository>(),
     ),
   );
