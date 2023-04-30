@@ -34,20 +34,70 @@ class _SearchScreenState extends State<SearchScreen> {
       child: Scaffold(
         body: SafeArea(
           child: Column(children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: TextField(
-                autofocus: true,
-                controller: _searchCtrl,
-                decoration: InputDecoration(
-                    prefixIcon: GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Icon(Icons.arrow_back_ios))),
+            Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  // color: Colors.orange[50],
+                  borderRadius: BorderRadius.circular(30),
+                  // border: Border.all(color: Colors.orangeAccent),
+                ),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const SearchScreen()));
+                  },
+                  child:  TextField(
+                    controller: _searchCtrl,
+                    autofocus: true,
+
+                    decoration: InputDecoration(
+                        // isDense: true,
+                        border: InputBorder.none,
+                        prefixIcon: GestureDetector(
+                          onTap: (){
+                            Navigator.pop(context);
+                          },
+                          child: const Icon(
+                            Icons.arrow_back_ios,
+                            color: Colors.orange,
+                          ),
+                        ),
+                        // label: const Text(
+                        //   'Where do you want to travel ?',
+                        //   style: TextStyle(color: Colors.orange),
+                        // ),
+                        floatingLabelBehavior: FloatingLabelBehavior.never
+                      // helperText: 'Search'
+                    ),
+                  ),
+                ),
               ),
             ),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            //   child: TextField(
+            //     autofocus: true,
+            //     controller: _searchCtrl,
+            //     decoration: InputDecoration(
+            //         prefixIcon: GestureDetector(
+            //             onTap: () {
+            //               Navigator.pop(context);
+            //             },
+            //             child: const Icon(Icons.arrow_back_ios))),
+            //   ),
+            // ),
             BlocBuilder<SearchBloc, SearchState>(builder: (context, state) {
+              if (state is SearchInitial) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: const Text('Search a location'),
+                );
+              }
               if (state is SearchLoading) {
                 return const Center(
                   child: CircularProgressIndicator(),
@@ -75,14 +125,16 @@ class _SearchScreenState extends State<SearchScreen> {
                                 backgroundImage: NetworkImage(package.imgUrl),
                               ),
                               subtitle: Text(package.location),
-                              trailing: Text('RM${package.price}/person'),
+                              trailing: Text('RM${package.price}/person',style:
+                                const TextStyle(color: Colors.orange,fontWeight: FontWeight.bold),),
                             );
                           },
+
                         ),
-                  
+
                       );
               } else {
-                return Text('Search Error');
+                return const Text('Search Error');
               }
             })
           ]),

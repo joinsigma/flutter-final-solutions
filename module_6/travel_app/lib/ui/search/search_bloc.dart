@@ -25,6 +25,7 @@ abstract class SearchState extends Equatable {
   List<Object?> get props => [];
 }
 
+class SearchInitial extends SearchState {}
 class SearchLoading extends SearchState {}
 
 class SearchLoadSuccess extends SearchState {
@@ -39,11 +40,12 @@ class SearchLoadFailed extends SearchState {}
 ///Bloc
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
   final TravelPackageRepository _travelPackageRepository;
-  SearchBloc(this._travelPackageRepository) : super(SearchLoading()) {
+  SearchBloc(this._travelPackageRepository) : super(SearchInitial()) {
     on<TriggerSearch>(_onTriggerSearch);
   }
 
   void _onTriggerSearch(TriggerSearch event, Emitter<SearchState> emit) async {
+    emit(SearchLoading());
     final result = await _travelPackageRepository.searchPackages(event.keyword);
     emit(SearchLoadSuccess(result));
   }

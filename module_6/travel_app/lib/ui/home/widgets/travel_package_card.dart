@@ -24,14 +24,22 @@ class TravelPackageCard extends StatelessWidget {
         padding: const EdgeInsets.all(10.0),
         child: Card(
           elevation: 4.0,
-          color: Color(0xFFF5F5F5),
+          color: const Color(0xFFF5F5F5),
           child: Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Image.network(imgUrl, width: double.infinity, height: 250),
+                Image.network(
+                  imgUrl,
+                  width: double.infinity,
+                  height: 250,
+                  fit: BoxFit.cover,
+                ),
+                const SizedBox(
+                  height: 5.0,
+                ),
                 Row(
                   children: [
                     Column(

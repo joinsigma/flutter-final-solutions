@@ -55,185 +55,187 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: CircularProgressIndicator(),
             );
           } else if (state is ProfileLoadSuccess) {
-            return Column(
-              children: [
-                Row(
-                  children: [
-                    const Spacer(),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => EditProfileScreen(
-                                      name: state.userDetail.name,
-                                      email: state.userDetail.email,
-                                      address: state.userDetail.address,
-                                      mobileNum: state.userDetail.mobileNum)));
-                        },
-                        child: const Text('Edit'),
-                      ),
-                    )
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: SizedBox(
-                        width: 100,
-                        height: 100,
-                        child: Stack(
-                          children: [
-                            state.selectedProfileImage != null
-                                ? Container(
-                                    width: 100.0,
-                                    height: 150.0,
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: FileImage(
-                                              state.selectedProfileImage!)),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(100.0)),
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      const Spacer(),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => EditProfileScreen(
+                                        name: state.userDetail.name,
+                                        email: state.userDetail.email,
+                                        address: state.userDetail.address,
+                                        mobileNum: state.userDetail.mobileNum)));
+                          },
+                          child: const Text('Edit'),
+                        ),
+                      )
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: SizedBox(
+                          width: 100,
+                          height: 100,
+                          child: Stack(
+                            children: [
+                              state.selectedProfileImage != null
+                                  ? Container(
+                                      width: 100.0,
+                                      height: 150.0,
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: FileImage(
+                                                state.selectedProfileImage!)),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(100.0)),
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : state.userDetail.imageUrl == ""
+                                      ? const CircleAvatar(
+                                          backgroundColor: Colors.white,
+                                          radius: 50.0,
+                                          backgroundImage:
+                                              AssetImage("asset/user.png"),
+                                        )
+                                      : CircleAvatar(
+                                          radius: 50.0,
+                                          backgroundImage: NetworkImage(
+                                              state.userDetail.imageUrl),
+                                        ),
+                              Align(
+                                alignment: AlignmentDirectional.bottomEnd,
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                      color: Colors.orange,
+                                      shape: BoxShape.circle),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      ///Trigger profile image selection
+                                      _selectUserProfileImage();
+
+                                      ///Todo: Trigger bottom sheet
+                                      // showDialog(
+                                      //     context: context,
+                                      //     builder: (context) {
+                                      //
+                                      //       return AlertDialog(
+                                      //         content: CircleAvatar(
+                                      //           radius: 50.0,
+                                      //           backgroundImage:
+                                      //               // NetworkImage(profileImg),
+                                      //               FileImage(File(selectedImage!.path)),
+                                      //         ),
+                                      //         title: Text(
+                                      //             'Change profile picture ?'),
+                                      //         actions: [
+                                      //           Text('Yes'),
+                                      //           SizedBox(
+                                      //             width: 10.0,
+                                      //           ),
+                                      //           Text('No')
+                                      //         ],
+                                      //       );
+                                      //     });
+                                    },
+                                    child: const Icon(
+                                      Icons.add,
                                       color: Colors.white,
                                     ),
-                                  )
-                                : state.userDetail.imageUrl == ""
-                                    ? const CircleAvatar(
-                                        backgroundColor: Colors.white,
-                                        radius: 50.0,
-                                        backgroundImage:
-                                            AssetImage("asset/user.png"),
-                                      )
-                                    : CircleAvatar(
-                                        radius: 50.0,
-                                        backgroundImage: NetworkImage(
-                                            state.userDetail.imageUrl),
-                                      ),
-                            Align(
-                              alignment: AlignmentDirectional.bottomEnd,
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                    color: Colors.orange,
-                                    shape: BoxShape.circle),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    ///Trigger profile image selection
-                                    _selectUserProfileImage();
-
-                                    ///Todo: Trigger bottom sheet
-                                    // showDialog(
-                                    //     context: context,
-                                    //     builder: (context) {
-                                    //
-                                    //       return AlertDialog(
-                                    //         content: CircleAvatar(
-                                    //           radius: 50.0,
-                                    //           backgroundImage:
-                                    //               // NetworkImage(profileImg),
-                                    //               FileImage(File(selectedImage!.path)),
-                                    //         ),
-                                    //         title: Text(
-                                    //             'Change profile picture ?'),
-                                    //         actions: [
-                                    //           Text('Yes'),
-                                    //           SizedBox(
-                                    //             width: 10.0,
-                                    //           ),
-                                    //           Text('No')
-                                    //         ],
-                                    //       );
-                                    //     });
-                                  },
-                                  child: const Icon(
-                                    Icons.add,
-                                    color: Colors.white,
                                   ),
                                 ),
-                              ),
-                            )
-                          ],
+                              )
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: ProfileCard(
-                        title: 'Trips',
-                        count: state.userDetail.numTrips.toString(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: ProfileCard(
+                          title: 'Trips',
+                          count: state.userDetail.numTrips.toString(),
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: ProfileCard(
-                        title: 'Likes',
-                        count: state.userDetail.numLikes.toString(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: ProfileCard(
+                          title: 'Likes',
+                          count: state.userDetail.numLikes.toString(),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                ListTile(
-                  title: const Text('Name'),
-                  subtitle: Text(state.userDetail.name),
-                ),
-                const Divider(),
-                ListTile(
-                  title: const Text('Email'),
-                  subtitle: Text(state.userDetail.email),
-                ),
-                const Divider(),
-                ListTile(
-                  title: const Text('Mobile No'),
-                  subtitle: Text(state.userDetail.mobileNum),
-                ),
-                const Divider(),
-                ListTile(
-                  title: const Text('Address'),
-                  subtitle: state.userDetail.address == ""
-                      ? const Text("NA")
-                      : Text(state.userDetail.address),
-                ),
-                state.isSaveProfileImgActive
-                    ? Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ElevatedButton(
+                    ],
+                  ),
+                  ListTile(
+                    title: const Text('Name'),
+                    subtitle: Text(state.userDetail.name),
+                  ),
+                  const Divider(),
+                  ListTile(
+                    title: const Text('Email'),
+                    subtitle: Text(state.userDetail.email),
+                  ),
+                  const Divider(),
+                  ListTile(
+                    title: const Text('Mobile No'),
+                    subtitle: Text(state.userDetail.mobileNum),
+                  ),
+                  const Divider(),
+                  ListTile(
+                    title: const Text('Address'),
+                    subtitle: state.userDetail.address == ""
+                        ? const Text("NA")
+                        : Text(state.userDetail.address),
+                  ),
+                  state.isSaveProfileImgActive
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ElevatedButton(
+                                onPressed: () {
+                                  _profileBloc.add(SaveNewImage());
+                                },
+                                child: const Text(
+                                  'Save New Image',
+                                  style: TextStyle(color: Colors.white),
+                                )),
+                            const SizedBox(
+                              width: 50,
+                            ),
+                            ElevatedButton(
+                                onPressed: () {
+                                  _profileBloc.add(CancelNewImage());
+                                },
+                                child: const Text(
+                                  'Cancel',
+                                  style: TextStyle(color: Colors.white),
+                                )),
+                          ],
+                        )
+                      : SizedBox(
+                          width: 150,
+                          child: ElevatedButton(
                               onPressed: () {
-                                _profileBloc.add(SaveNewImage());
+                                _profileBloc.add(TriggerLogout());
                               },
                               child: const Text(
-                                'Save New Image',
+                                'Logout',
                                 style: TextStyle(color: Colors.white),
                               )),
-                          const SizedBox(
-                            width: 50,
-                          ),
-                          ElevatedButton(
-                              onPressed: () {
-                                _profileBloc.add(CancelNewImage());
-                              },
-                              child: const Text(
-                                'Cancel',
-                                style: TextStyle(color: Colors.white),
-                              )),
-                        ],
-                      )
-                    : SizedBox(
-                        width: 150,
-                        child: ElevatedButton(
-                            onPressed: () {
-                              _profileBloc.add(TriggerLogout());
-                            },
-                            child: const Text(
-                              'Logout',
-                              style: TextStyle(color: Colors.white),
-                            )),
-                      )
-              ],
+                        )
+                ],
+              ),
             );
           } else {
             return const Center(
